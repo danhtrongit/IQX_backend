@@ -52,9 +52,23 @@ fi
 print_info "Installing dependencies..."
 source venv/bin/activate
 pip install --upgrade pip
-pip install -e ".[dev]"
+
+# Try editable install first, fallback to requirements.txt
+if pip install -e ".[dev]"; then
+    print_success "Dependencies installed (editable mode)"
+elif [ -f "requirements.txt" ]; then
+    print_info "Editable install failed, using requirements.txt..."
+    pip install -r requirements.txt
+    # Install dev dependencies separately
+    pip install pytest pytest-asyncio httpx aiosqlite ruff mypy 2>/dev/null || true
+    print_success "Dependencies installed (requirements.txt)"
+else
+    print_error "Failed to install dependencies"
+    exit 1
+fi
+
 touch venv/.requirements_installed
-print_success "Dependencies installed"
+print_success "Dependencies ready"
 
 # 4. Setup .env
 if [ ! -f ".env" ]; then

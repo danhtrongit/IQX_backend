@@ -67,9 +67,23 @@ print_info "Checking dependencies..."
 if [ ! -f "venv/.requirements_installed" ]; then
     print_warning "Dependencies not installed. Installing..."
     pip install --upgrade pip
-    pip install -e ".[dev]"
+
+    # Try editable install first, fallback to requirements.txt
+    if pip install -e ".[dev]" 2>/dev/null; then
+        print_success "Dependencies installed (editable mode)"
+    elif [ -f "requirements.txt" ]; then
+        print_info "Editable install failed, using requirements.txt..."
+        pip install -r requirements.txt
+        # Install dev dependencies separately
+        pip install pytest pytest-asyncio httpx aiosqlite ruff mypy 2>/dev/null || true
+        print_success "Dependencies installed (requirements.txt)"
+    else
+        print_error "Failed to install dependencies"
+        exit 1
+    fi
+
     touch venv/.requirements_installed
-    print_success "Dependencies installed"
+    print_success "Dependencies ready"
 else
     print_success "Dependencies already installed"
 fi
