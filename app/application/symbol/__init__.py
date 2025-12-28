@@ -1,0 +1,1 @@
+"""Symbol application module."""

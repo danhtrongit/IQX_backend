@@ -1,0 +1,15 @@
+{
+  "id": "session-1766758526426",
+  "projectId": "5b6df5df-4bc6-4055-b0ee-d839e909f983",
+  "title": "hi",
+  "messages": [
+    {
+      "id": "msg-1766758526429",
+      "role": "user",
+      "content": "hi",
+      "timestamp": "2025-12-26T14:15:26.429Z"
+    }
+  ],
+  "createdAt": "2025-12-26T14:15:26.426Z",
+  "updatedAt": "2025-12-26T14:15:26.429Z"
+}
