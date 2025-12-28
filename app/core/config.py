@@ -48,6 +48,14 @@ class Settings(BaseSettings):
     AI_API_KEY: str = ""
     AI_MODEL: str = "gpt-5-nano"
 
+    # CORS
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174"
+
+    @property
+    def CORS_ORIGINS_LIST(self) -> list[str]:
+        """Parse CORS origins from comma-separated string."""
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
 
 @lru_cache
 def get_settings() -> Settings:
