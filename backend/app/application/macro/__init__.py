@@ -1,1 +1,0 @@
-"""Macro application module."""

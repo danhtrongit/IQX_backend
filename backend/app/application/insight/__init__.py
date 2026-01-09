@@ -1,1 +1,0 @@
-"""Insight application module."""

@@ -7,10 +7,14 @@ from app.infrastructure.repositories.symbol_repo import (
     SQLAlchemySymbolRepository,
     SQLAlchemyIndustryRepository,
 )
+from app.infrastructure.repositories.watchlist_repo import (
+    SQLAlchemyWatchlistRepository,
+)
 
 __all__ = [
     "SQLAlchemyUserRepository",
     "SQLAlchemyRefreshTokenRepository",
     "SQLAlchemySymbolRepository",
     "SQLAlchemyIndustryRepository",
+    "SQLAlchemyWatchlistRepository",
 ]

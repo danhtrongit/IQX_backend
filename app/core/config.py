@@ -42,11 +42,16 @@ class Settings(BaseSettings):
     
     # Price Stream
     ENABLE_PRICE_STREAM: bool = False  # Set to True to auto-start WebSocket stream
+
+    # Scheduler
+    ENABLE_SCHEDULER: bool = True  # Set to True to enable background jobs (OHLC sync)
     
     # AI Chat (Mr.Arix)
     AI_PROXY: str = "https://v98store.com/v1/chat/completions"
     AI_API_KEY: str = ""
     AI_MODEL: str = "gpt-5-nano"
+    AI_TIMEOUT: int = 30  # seconds
+    AI_MAX_RETRIES: int = 2
 
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174"

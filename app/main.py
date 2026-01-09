@@ -40,6 +40,15 @@ async def lifespan(app: FastAPI):
             logger.info("Price stream started")
         except Exception as e:
             logger.warning(f"Failed to start price stream: {e}")
+
+    # Start scheduler if enabled
+    if settings.ENABLE_SCHEDULER:
+        try:
+            from app.infrastructure.scheduler import start_scheduler
+            start_scheduler()
+            logger.info("Scheduler started")
+        except Exception as e:
+            logger.warning(f"Failed to start scheduler: {e}")
     
     yield
     
@@ -51,6 +60,15 @@ async def lifespan(app: FastAPI):
             logger.info("Price stream stopped")
         except Exception as e:
             logger.warning(f"Error stopping price stream: {e}")
+
+    # Stop scheduler
+    if settings.ENABLE_SCHEDULER:
+        try:
+            from app.infrastructure.scheduler import shutdown_scheduler
+            shutdown_scheduler()
+            logger.info("Scheduler stopped")
+        except Exception as e:
+            logger.warning(f"Error stopping scheduler: {e}")
     
     # Shutdown cache
     await shutdown_cache()

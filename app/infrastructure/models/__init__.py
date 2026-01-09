@@ -8,6 +8,8 @@ from app.infrastructure.models.trading_model import (
     TradeModel,
     LedgerEntryModel,
 )
+from app.infrastructure.models.watchlist_model import WatchlistModel
+from app.infrastructure.models.ohlc_model import StockOHLCDailyModel
 
 __all__ = [
     "UserModel",
@@ -19,4 +21,6 @@ __all__ = [
     "OrderModel",
     "TradeModel",
     "LedgerEntryModel",
+    "WatchlistModel",
+    "StockOHLCDailyModel",
 ]

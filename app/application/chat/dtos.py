@@ -13,6 +13,7 @@ class ChatRequest(BaseModel):
     """Chat request."""
     message: str = Field(..., description="User message")
     conversation_id: Optional[str] = Field(None, description="Conversation ID for context")
+    stream: bool = Field(False, description="Enable streaming response")
 
 
 class ChatResponse(BaseModel):

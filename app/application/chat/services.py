@@ -1,12 +1,15 @@
-"""Chat service with AI integration."""
+"""Chat service with AI integration - Optimized with OpenAI library."""
 import json
 import uuid
-import aiohttp
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, AsyncGenerator
 from datetime import datetime, timedelta
+
+from openai import AsyncOpenAI
+import httpx
 
 from app.core.config import settings
 from app.core.logging import get_logger
+from app.core.cache import get_cache, CacheTTL
 from app.application.chat.dtos import ChatRequest, ChatResponse, FunctionCall
 from app.application.chat.functions import get_function_definitions_openai
 
@@ -48,124 +51,321 @@ VÍ DỤ TRẢ LỜI:
 
 
 class ChatService:
-    """Chat service with AI function calling."""
+    """Chat service with AI function calling - Optimized with OpenAI SDK."""
 
     def __init__(self, data_executor: "DataExecutor"):
         self.data_executor = data_executor
         self._conversations: Dict[str, List[Dict]] = {}
 
+        # Initialize OpenAI client with proxy and custom httpx client for connection pooling
+        self._openai_client: Optional[AsyncOpenAI] = None
+
+    def _get_client(self) -> AsyncOpenAI:
+        """Get or create OpenAI client with proxy support and connection pooling."""
+        if self._openai_client is None:
+            # Create custom httpx client with connection pooling and timeout
+            http_client = httpx.AsyncClient(
+                base_url=settings.AI_PROXY,
+                timeout=httpx.Timeout(settings.AI_TIMEOUT, connect=10.0),
+                limits=httpx.Limits(
+                    max_keepalive_connections=20,  # Increased from 10
+                    max_connections=50,  # Increased from 20
+                    keepalive_expiry=60.0,  # Increased from 30
+                ),
+            )
+
+            self._openai_client = AsyncOpenAI(
+                api_key=settings.AI_API_KEY,
+                base_url=settings.AI_PROXY,
+                http_client=http_client,
+                max_retries=settings.AI_MAX_RETRIES,
+            )
+
+        return self._openai_client
+
     async def chat(self, request: ChatRequest) -> ChatResponse:
-        """Process chat request."""
+        """Process chat request with optimized caching."""
         conversation_id = request.conversation_id or str(uuid.uuid4())
-        
-        # Get or create conversation history
-        if conversation_id not in self._conversations:
-            self._conversations[conversation_id] = []
-        
-        history = self._conversations[conversation_id]
-        
+
+        # Get or create conversation history from cache first
+        cache = get_cache()
+        cache_key = f"chat:conversation:{conversation_id}"
+
+        history = await cache.get(cache_key)
+        if history is None:
+            if conversation_id not in self._conversations:
+                self._conversations[conversation_id] = []
+            history = self._conversations[conversation_id]
+        else:
+            # Update in-memory cache too
+            self._conversations[conversation_id] = history
+
         # Add user message
         history.append({"role": "user", "content": request.message})
-        
+
         # Call AI with function calling
         data_used = []
         response_text = await self._call_ai(history, data_used)
-        
+
         # Add assistant response to history
         history.append({"role": "assistant", "content": response_text})
-        
+
         # Keep only last 20 messages
         if len(history) > 20:
-            self._conversations[conversation_id] = history[-20:]
-        
+            history = history[-20:]
+
+        # Save to both cache and memory
+        self._conversations[conversation_id] = history
+        await cache.set(cache_key, history, ttl=1800)  # 30 minutes
+
         return ChatResponse(
             message=response_text,
             conversation_id=conversation_id,
             data_used=data_used if data_used else None,
         )
 
+    async def chat_stream(self, request: ChatRequest) -> AsyncGenerator[str, None]:
+        """Process chat request with streaming response."""
+        conversation_id = request.conversation_id or str(uuid.uuid4())
+
+        # Get or create conversation history from cache first
+        cache = get_cache()
+        cache_key = f"chat:conversation:{conversation_id}"
+
+        history = await cache.get(cache_key)
+        if history is None:
+            if conversation_id not in self._conversations:
+                self._conversations[conversation_id] = []
+            history = self._conversations[conversation_id]
+        else:
+            self._conversations[conversation_id] = history
+
+        # Add user message
+        history.append({"role": "user", "content": request.message})
+
+        # Stream AI response
+        data_used = []
+        full_response = ""
+
+        async for chunk in self._call_ai_stream(history, data_used):
+            full_response += chunk
+            yield f"data: {json.dumps({'chunk': chunk, 'conversation_id': conversation_id}, ensure_ascii=False)}\n\n"
+
+        # Send final metadata
+        yield f"data: {json.dumps({'done': True, 'data_used': data_used, 'conversation_id': conversation_id}, ensure_ascii=False)}\n\n"
+
+        # Add assistant response to history
+        history.append({"role": "assistant", "content": full_response})
+
+        # Keep only last 20 messages
+        if len(history) > 20:
+            history = history[-20:]
+
+        # Save to both cache and memory
+        self._conversations[conversation_id] = history
+        await cache.set(cache_key, history, ttl=1800)
+
     async def _call_ai(
         self,
         history: List[Dict],
         data_used: List[str],
     ) -> str:
-        """Call AI proxy API with function calling."""
+        """Call AI proxy API with function calling - Optimized single-pass approach."""
         if not settings.AI_API_KEY:
             return "❌ Chưa cấu hình AI_API_KEY. Vui lòng thêm vào .env"
 
-        # Build messages
-        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-        for msg in history[-10:]:
-            messages.append({"role": msg["role"], "content": msg["content"]})
+        try:
+            client = self._get_client()
 
-        payload = {
-            "model": settings.AI_MODEL,
-            "messages": messages,
-            "tools": get_function_definitions_openai(),
-            "tool_choice": "auto",
-            "temperature": 0.7,
-            "max_tokens": 2048,
-        }
+            # Build messages with system prompt
+            messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+            for msg in history[-10:]:  # Keep last 10 messages for context
+                messages.append({"role": msg["role"], "content": msg["content"]})
 
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {settings.AI_API_KEY}"
-        }
+            # Initial call with tools
+            response = await client.chat.completions.create(
+                model=settings.AI_MODEL,
+                messages=messages,
+                tools=get_function_definitions_openai(),
+                tool_choice="auto",
+                temperature=0.7,
+                max_tokens=2048,
+            )
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(settings.AI_PROXY, json=payload, headers=headers) as resp:
-                if resp.status != 200:
-                    error = await resp.text()
-                    logger.error(f"AI proxy error: {error}")
-                    return f"❌ Lỗi kết nối AI: {resp.status}"
-                
-                result = await resp.json()
+            message = response.choices[0].message
 
-            choice = result.get("choices", [{}])[0]
-            msg = choice.get("message", {})
-            
             # Check for tool calls
-            tool_calls = msg.get("tool_calls", [])
-            
-            if tool_calls:
-                # Execute functions and store results
-                messages.append(msg)
+            if message.tool_calls:
+                # Add assistant message with tool calls to history
+                messages.append({
+                    "role": "assistant",
+                    "content": message.content,
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": "function",
+                            "function": {
+                                "name": tc.function.name,
+                                "arguments": tc.function.arguments,
+                            }
+                        }
+                        for tc in message.tool_calls
+                    ]
+                })
+
+                # Execute all tool calls in parallel
                 function_results = []
-                
-                for tc in tool_calls:
-                    func = tc.get("function", {})
-                    name = func.get("name", "")
-                    args = json.loads(func.get("arguments", "{}"))
-                    
-                    data_used.append(name)
-                    fn_result = await self.data_executor.execute(name, args)
-                    function_results.append({"name": name, "args": args, "result": fn_result})
-                    
+                for tool_call in message.tool_calls:
+                    func_name = tool_call.function.name
+                    func_args = json.loads(tool_call.function.arguments)
+
+                    data_used.append(func_name)
+                    fn_result = await self.data_executor.execute(func_name, func_args)
+                    function_results.append({
+                        "name": func_name,
+                        "args": func_args,
+                        "result": fn_result
+                    })
+
+                    # Add tool result to messages
                     messages.append({
                         "role": "tool",
-                        "tool_call_id": tc["id"],
+                        "tool_call_id": tool_call.id,
                         "content": json.dumps(fn_result, ensure_ascii=False, default=str)
                     })
 
-                # Get final response (without tools)
-                payload["messages"] = messages
-                del payload["tools"]
-                del payload["tool_choice"]
-
+                # Get final response with tool results (without tools parameter)
                 try:
-                    async with session.post(settings.AI_PROXY, json=payload, headers=headers) as resp:
-                        if resp.status == 200:
-                            result = await resp.json()
-                            content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-                            if content and content.strip():
-                                return content
+                    final_response = await client.chat.completions.create(
+                        model=settings.AI_MODEL,
+                        messages=messages,
+                        temperature=0.7,
+                        max_tokens=2048,
+                    )
+
+                    content = final_response.choices[0].message.content
+                    if content and content.strip():
+                        return content
+
                 except Exception as e:
                     logger.error(f"AI final response error: {e}")
-                
-                # Fallback: format raw results if AI fails or returns empty
+
+                # Fallback: format raw results if AI fails
                 return self._format_raw_results(function_results)
 
-            return msg.get("content") or "Tôi không hiểu câu hỏi. Vui lòng hỏi lại."
+            # No tool calls, return direct response
+            return message.content or "Tôi không hiểu câu hỏi. Vui lòng hỏi lại."
+
+        except Exception as e:
+            logger.error(f"AI API error: {e}")
+            return f"❌ Lỗi kết nối AI: {str(e)}"
+
+    async def _call_ai_stream(
+        self,
+        history: List[Dict],
+        data_used: List[str],
+    ) -> AsyncGenerator[str, None]:
+        """Call AI with streaming response - Optimized approach."""
+        if not settings.AI_API_KEY:
+            yield "❌ Chưa cấu hình AI_API_KEY. Vui lòng thêm vào .env"
+            return
+
+        try:
+            client = self._get_client()
+
+            # Build messages with system prompt
+            messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+            for msg in history[-10:]:  # Keep last 10 messages for context
+                messages.append({"role": msg["role"], "content": msg["content"]})
+
+            # Initial call with tools (non-streaming to detect function calls)
+            response = await client.chat.completions.create(
+                model=settings.AI_MODEL,
+                messages=messages,
+                tools=get_function_definitions_openai(),
+                tool_choice="auto",
+                temperature=0.7,
+                max_tokens=2048,
+            )
+
+            message = response.choices[0].message
+
+            # Check for tool calls
+            if message.tool_calls:
+                # Add assistant message with tool calls to history
+                messages.append({
+                    "role": "assistant",
+                    "content": message.content,
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": "function",
+                            "function": {
+                                "name": tc.function.name,
+                                "arguments": tc.function.arguments,
+                            }
+                        }
+                        for tc in message.tool_calls
+                    ]
+                })
+
+                # Execute all tool calls
+                function_results = []
+                for tool_call in message.tool_calls:
+                    func_name = tool_call.function.name
+                    func_args = json.loads(tool_call.function.arguments)
+
+                    data_used.append(func_name)
+                    fn_result = await self.data_executor.execute(func_name, func_args)
+                    function_results.append({
+                        "name": func_name,
+                        "args": func_args,
+                        "result": fn_result
+                    })
+
+                    # Add tool result to messages
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": json.dumps(fn_result, ensure_ascii=False, default=str)
+                    })
+
+                # Get final response with streaming
+                try:
+                    stream = await client.chat.completions.create(
+                        model=settings.AI_MODEL,
+                        messages=messages,
+                        temperature=0.7,
+                        max_tokens=2048,
+                        stream=True,
+                    )
+
+                    async for chunk in stream:
+                        if chunk.choices and chunk.choices[0].delta.content:
+                            yield chunk.choices[0].delta.content
+
+                except Exception as e:
+                    logger.error(f"AI streaming error: {e}")
+                    # Fallback: format raw results
+                    yield self._format_raw_results(function_results)
+
+            else:
+                # No tool calls, stream direct response
+                stream = await client.chat.completions.create(
+                    model=settings.AI_MODEL,
+                    messages=messages,
+                    temperature=0.7,
+                    max_tokens=2048,
+                    stream=True,
+                )
+
+                async for chunk in stream:
+                    if chunk.choices and chunk.choices[0].delta.content:
+                        yield chunk.choices[0].delta.content
+
+        except Exception as e:
+            logger.error(f"AI streaming error: {e}")
+            yield f"❌ Lỗi kết nối AI: {str(e)}"
 
     def _format_raw_results(self, results: List[Dict]) -> str:
         """Format raw function results as markdown (no tables)."""
@@ -173,7 +373,7 @@ class ChatService:
         for r in results:
             name = r.get("name", "unknown")
             data = r.get("result", {})
-            
+
             # Format based on function type
             if name == "get_shareholders" and "data" in data:
                 output += "### 👥 Danh sách cổ đông\n\n"
@@ -214,7 +414,7 @@ class ChatService:
             else:
                 output += f"### {name}\n"
                 output += f"```json\n{json.dumps(data, indent=2, ensure_ascii=False, default=str)}\n```\n\n"
-        
+
         output += f"*Cập nhật: {datetime.now().strftime('%H:%M %d/%m/%Y')}*"
         return output
 
@@ -246,51 +446,51 @@ class DataExecutor:
             if name == "get_stock_price":
                 return await self._get_stock_price(args.get("symbol", ""))
             elif name == "get_stock_detail":
-                return self._get_stock_detail(args.get("symbol", ""))
+                return await self._get_stock_detail(args.get("symbol", ""))
             elif name == "get_company_overview":
-                return self._get_company_overview(args.get("symbol", ""))
+                return await self._get_company_overview(args.get("symbol", ""))
             elif name == "get_shareholders":
-                return self._get_shareholders(args.get("symbol", ""))
+                return await self._get_shareholders(args.get("symbol", ""))
             elif name == "get_officers":
-                return self._get_officers(args.get("symbol", ""))
+                return await self._get_officers(args.get("symbol", ""))
             elif name == "get_company_news":
-                return self._get_company_news(args.get("symbol", ""))
+                return await self._get_company_news(args.get("symbol", ""))
             elif name == "get_company_events":
-                return self._get_company_events(args.get("symbol", ""))
+                return await self._get_company_events(args.get("symbol", ""))
             elif name == "get_financial_ratio":
-                return self._get_financial_ratio(
+                return await self._get_financial_ratio(
                     args.get("symbol", ""),
                     args.get("period", "quarter")
                 )
             elif name == "get_balance_sheet":
-                return self._get_balance_sheet(
+                return await self._get_balance_sheet(
                     args.get("symbol", ""),
                     args.get("period", "quarter")
                 )
             elif name == "get_income_statement":
-                return self._get_income_statement(
+                return await self._get_income_statement(
                     args.get("symbol", ""),
                     args.get("period", "quarter")
                 )
             elif name == "get_cash_flow":
-                return self._get_cash_flow(
+                return await self._get_cash_flow(
                     args.get("symbol", ""),
                     args.get("period", "quarter")
                 )
             elif name == "get_price_history":
-                return self._get_price_history(
+                return await self._get_price_history(
                     args.get("symbol", ""),
                     args.get("days", 30)
                 )
             elif name == "get_market_indices":
-                return self._get_market_indices()
+                return await self._get_market_indices()
             elif name == "get_top_stocks":
-                return self._get_top_stocks(
+                return await self._get_top_stocks(
                     args.get("type", "gainer"),
                     args.get("limit", 10)
                 )
             elif name == "get_foreign_trading":
-                return self._get_foreign_trading(
+                return await self._get_foreign_trading(
                     args.get("symbol"),
                     args.get("type", "buy")
                 )
@@ -305,7 +505,7 @@ class DataExecutor:
     async def _get_stock_price(self, symbol: str) -> Dict:
         """Get realtime or latest stock price."""
         symbol = symbol.upper().strip()
-        
+
         # Try realtime first
         cached = self.price_stream_manager.get_cached_price(symbol)
         if cached:
@@ -321,7 +521,7 @@ class DataExecutor:
                 "source": "realtime",
                 "timestamp": datetime.now().isoformat()
             }
-        
+
         # Fallback to history (get latest day)
         try:
             from app.application.quote.dtos import HistoryRequest
@@ -349,91 +549,209 @@ class DataExecutor:
                 }
         except Exception as e:
             logger.error(f"Error getting price for {symbol}: {e}")
-        
+
         return {"error": f"Không tìm thấy dữ liệu giá cho {symbol}"}
 
-    def _get_stock_detail(self, symbol: str) -> Dict:
-        """Get stock detail."""
+    async def _get_stock_detail(self, symbol: str) -> Dict:
+        """Get stock detail (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:stock_detail:{symbol.upper()}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         result = self.company_service.get_stock_detail(symbol)
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.COMPANY_INFO)
+        return data
 
-    def _get_company_overview(self, symbol: str) -> Dict:
-        """Get company overview."""
+    async def _get_company_overview(self, symbol: str) -> Dict:
+        """Get company overview (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:company_overview:{symbol.upper()}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         result = self.company_service.get_overview(symbol)
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.COMPANY_OVERVIEW)
+        return data
 
-    def _get_shareholders(self, symbol: str) -> Dict:
-        """Get shareholders."""
+    async def _get_shareholders(self, symbol: str) -> Dict:
+        """Get shareholders (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:shareholders:{symbol.upper()}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         result = self.company_service.get_shareholders(symbol)
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.OFFICERS)
+        return data
 
-    def _get_officers(self, symbol: str) -> Dict:
-        """Get officers."""
+    async def _get_officers(self, symbol: str) -> Dict:
+        """Get officers (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:officers:{symbol.upper()}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         result = self.company_service.get_officers(symbol)
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.OFFICERS)
+        return data
 
-    def _get_company_news(self, symbol: str) -> Dict:
-        """Get company news."""
+    async def _get_company_news(self, symbol: str) -> Dict:
+        """Get company news (cached with shorter TTL)."""
+        cache = get_cache()
+        cache_key = f"chat:company_news:{symbol.upper()}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         result = self.company_service.get_news(symbol)
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.INTRADAY)
+        return data
 
-    def _get_company_events(self, symbol: str) -> Dict:
-        """Get company events."""
+    async def _get_company_events(self, symbol: str) -> Dict:
+        """Get company events (cached with shorter TTL)."""
+        cache = get_cache()
+        cache_key = f"chat:company_events:{symbol.upper()}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         result = self.company_service.get_events(symbol)
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.INTRADAY)
+        return data
 
-    def _get_financial_ratio(self, symbol: str, period: str) -> Dict:
-        """Get financial ratios."""
+    async def _get_financial_ratio(self, symbol: str, period: str) -> Dict:
+        """Get financial ratios (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:financial_ratio:{symbol.upper()}:{period}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         from app.application.financial.dtos import RatioRequest
         result = self.financial_service.get_ratio(symbol, RatioRequest(period=period, limit=4))
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.FINANCIALS)
+        return data
 
-    def _get_balance_sheet(self, symbol: str, period: str) -> Dict:
-        """Get balance sheet."""
+    async def _get_balance_sheet(self, symbol: str, period: str) -> Dict:
+        """Get balance sheet (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:balance_sheet:{symbol.upper()}:{period}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         from app.application.financial.dtos import FinancialRequest
         result = self.financial_service.get_balance_sheet(
             symbol, FinancialRequest(period=period, limit=4)
         )
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.FINANCIALS)
+        return data
 
-    def _get_income_statement(self, symbol: str, period: str) -> Dict:
-        """Get income statement."""
+    async def _get_income_statement(self, symbol: str, period: str) -> Dict:
+        """Get income statement (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:income_statement:{symbol.upper()}:{period}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         from app.application.financial.dtos import FinancialRequest
         result = self.financial_service.get_income_statement(
             symbol, FinancialRequest(period=period, limit=4)
         )
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.FINANCIALS)
+        return data
 
-    def _get_cash_flow(self, symbol: str, period: str) -> Dict:
-        """Get cash flow."""
+    async def _get_cash_flow(self, symbol: str, period: str) -> Dict:
+        """Get cash flow (cached)."""
+        cache = get_cache()
+        cache_key = f"chat:cash_flow:{symbol.upper()}:{period}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         from app.application.financial.dtos import FinancialRequest
         result = self.financial_service.get_cash_flow(
             symbol, FinancialRequest(period=period, limit=4)
         )
-        return result.model_dump()
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.FINANCIALS)
+        return data
 
-    def _get_price_history(self, symbol: str, days: int) -> Dict:
-        """Get price history."""
+    async def _get_price_history(self, symbol: str, days: int) -> Dict:
+        """Get price history (cached with TTL based on recency)."""
+        cache = get_cache()
+        cache_key = f"chat:price_history:{symbol.upper()}:{days}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         from app.application.quote.dtos import HistoryRequest
         start = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
         result = self.quote_service.get_history(
             symbol, HistoryRequest(start=start, interval="1D")
         )
-        return result.model_dump()
+        data = result.model_dump()
 
-    def _get_market_indices(self) -> Dict:
-        """Get market indices from realtime stream."""
+        # Use shorter TTL for recent history
+        ttl = CacheTTL.HISTORICAL_RECENT if days <= 30 else CacheTTL.HISTORICAL_OLD
+        await cache.set(cache_key, data, ttl)
+        return data
+
+    async def _get_market_indices(self) -> Dict:
+        """Get market indices from realtime stream (cached with short TTL)."""
+        cache = get_cache()
+        cache_key = "chat:market_indices"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         indices = self.price_stream_manager.get_all_cached_indices()
         if indices:
-            return {
+            data = {
                 "indices": indices,
                 "source": "realtime",
                 "timestamp": datetime.now().isoformat()
             }
+            await cache.set(cache_key, data, CacheTTL.MARKET_OVERVIEW)
+            return data
         return {"error": "Chưa có dữ liệu chỉ số. Vui lòng kết nối stream."}
 
-    def _get_top_stocks(self, type_: str, limit: int) -> Dict:
-        """Get top stocks."""
+    async def _get_top_stocks(self, type_: str, limit: int) -> Dict:
+        """Get top stocks (cached with medium TTL)."""
+        cache = get_cache()
+        cache_key = f"chat:top_stocks:{type_}:{limit}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         if type_ == "gainer":
             result = self.insight_service.get_top_gainer(limit=limit)
         elif type_ == "loser":
@@ -444,19 +762,31 @@ class DataExecutor:
             result = self.insight_service.get_top_value(limit=limit)
         else:
             return {"error": f"Unknown type: {type_}"}
-        return result.model_dump()
 
-    def _get_foreign_trading(self, symbol: Optional[str], type_: str) -> Dict:
-        """Get foreign trading."""
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.TOP_STOCKS)
+        return data
+
+    async def _get_foreign_trading(self, symbol: Optional[str], type_: str) -> Dict:
+        """Get foreign trading (cached with medium TTL)."""
+        cache = get_cache()
+        cache_key = f"chat:foreign_trading:{symbol or 'all'}:{type_}"
+
+        cached = await cache.get(cache_key)
+        if cached:
+            return cached
+
         if symbol:
             result = self.trading_insight_service.get_foreign_trading(symbol)
-            return result.model_dump()
         else:
             if type_ == "buy":
                 result = self.insight_service.get_top_foreign_buy()
             else:
                 result = self.insight_service.get_top_foreign_sell()
-            return result.model_dump()
+
+        data = result.model_dump()
+        await cache.set(cache_key, data, CacheTTL.INTRADAY)
+        return data
 
     async def _search_symbol(self, query: str) -> Dict:
         """Search symbol."""

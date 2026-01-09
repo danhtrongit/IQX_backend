@@ -15,6 +15,8 @@ from app.presentation.api.v1.endpoints import (
     cache,
     listing,
     technical,
+    watchlist,
+    score,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -33,4 +35,6 @@ api_router.include_router(chat.router)
 api_router.include_router(cache.router)
 api_router.include_router(listing.router)
 api_router.include_router(technical.router)
+api_router.include_router(watchlist.router)
+api_router.include_router(score.router)
 

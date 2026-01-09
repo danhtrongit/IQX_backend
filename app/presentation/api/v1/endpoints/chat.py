@@ -1,5 +1,6 @@
 """Chat API endpoints - Mr.Arix AI Assistant."""
 from fastapi import APIRouter, Depends
+from fastapi.responses import StreamingResponse
 
 from app.application.chat.dtos import ChatRequest, ChatResponse
 from app.application.chat.services import ChatService, DataExecutor
@@ -52,7 +53,7 @@ async def chat(
 ):
     """
     Chat với Mr.Arix - Chuyên gia thông tin chứng khoán IQX.
-    
+
     Mr.Arix có thể trả lời các câu hỏi về:
     - Giá cổ phiếu realtime
     - Thông tin công ty (giới thiệu, cổ đông, ban lãnh đạo)
@@ -62,7 +63,7 @@ async def chat(
     - Top cổ phiếu tăng/giảm/khối lượng
     - Giao dịch khối ngoại
     - Chỉ số thị trường (VNINDEX, VN30, HNX, UPCOM)
-    
+
     **Ví dụ câu hỏi:**
     - "Giá VNM hiện tại bao nhiêu?"
     - "Cho tôi thông tin về công ty Vinamilk"
@@ -71,9 +72,23 @@ async def chat(
     - "Top 5 cổ phiếu tăng mạnh nhất hôm nay"
     - "Khối ngoại đang mua ròng những mã nào?"
     - "Báo cáo tài chính quý gần nhất của HPG"
-    
+
+    **Streaming:** Set `stream=true` để nhận response theo realtime (SSE format)
+
     **Lưu ý:** Mr.Arix chỉ cung cấp thông tin, KHÔNG tư vấn đầu tư.
     """
+    # Check if streaming is requested
+    if request.stream:
+        return StreamingResponse(
+            chat_service.chat_stream(request),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            }
+        )
+
     return await chat_service.chat(request)
 
 
