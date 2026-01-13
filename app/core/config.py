@@ -55,6 +55,7 @@ class Settings(BaseSettings):
 
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174"
+    CORS_ORIGIN_REGEX: str = ""  # Regex pattern for wildcard subdomains, e.g. "https://.*\\.iqx\\.vn"
 
     @property
     def CORS_ORIGINS_LIST(self) -> list[str]:
