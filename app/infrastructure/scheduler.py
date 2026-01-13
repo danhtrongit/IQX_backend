@@ -112,9 +112,7 @@ def setup_scheduler():
         replace_existing=True,
     )
 
-    logger.info("[Scheduler] Jobs configured:")
-    for job in scheduler.get_jobs():
-        logger.info(f"  - {job.id}: {job.name} | Next run: {job.next_run_time}")
+    logger.info("[Scheduler] Jobs configured")
 
 
 def start_scheduler():
@@ -123,6 +121,9 @@ def start_scheduler():
         setup_scheduler()
         scheduler.start()
         logger.info("[Scheduler] Started")
+        # Log jobs after scheduler is started (next_run_time available after start)
+        for job in scheduler.get_jobs():
+            logger.info(f"  - {job.id}: {job.name} | Next run: {job.next_run_time}")
 
 
 def shutdown_scheduler():

@@ -20,9 +20,9 @@ class Settings(BaseSettings):
     # Database
     MYSQL_HOST: str = "localhost"
     MYSQL_PORT: int = 3306
-    MYSQL_USER: str = "iqx"
-    MYSQL_PASSWORD: str = "iqx_password"
-    MYSQL_DATABASE: str = "iqx_db"
+    MYSQL_USER: str = "vsmi_db"
+    MYSQL_PASSWORD: str = "endweYdS5dHfb6eY"
+    MYSQL_DATABASE: str = "vsmi_db"
     
     @property
     def DATABASE_URL(self) -> str:
