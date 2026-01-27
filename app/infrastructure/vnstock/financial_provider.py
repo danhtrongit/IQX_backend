@@ -1,91 +1,111 @@
-"""Vnstock financial and company data provider using vnstock_data."""
+"""Vnstock financial and company data provider using vnstock."""
 from typing import List, Optional, Dict, Any
+from threading import Lock
 import pandas as pd
 import httpx
 
 from app.core.logging import get_logger
-from app.infrastructure.vnstock.instance_cache import get_finance, get_company
+from app.infrastructure.vnstock.instance_cache import get_company
 
 logger = get_logger(__name__)
 
+# Cache for vnstock Finance instances
+_vnstock_finance_cache: Dict[str, Any] = {}
+_vnstock_finance_lock = Lock()
+
+
+def _get_vnstock_finance(symbol: str, period: str):
+    """Get cached vnstock Finance instance."""
+    key = f"{symbol.upper()}:{period}"
+    if key not in _vnstock_finance_cache:
+        with _vnstock_finance_lock:
+            if key not in _vnstock_finance_cache:
+                from vnstock import Finance
+                _vnstock_finance_cache[key] = Finance(
+                    symbol=symbol.upper(),
+                    period=period,
+                    source="vci"
+                )
+    return _vnstock_finance_cache[key]
+
 
 class VnstockFinancialProvider:
-    """Provider for vnstock_data financial data."""
-    
+    """Provider for vnstock financial data with year/quarter info."""
+
     def __init__(self, source: str = "vci"):
         self.source = source.lower()
-    
+
     def get_balance_sheet(
         self, symbol: str, period: str, lang: str, limit: int
     ) -> List[Dict[str, Any]]:
         """Get balance sheet data."""
         try:
-            finance = get_finance(symbol, period, self.source)
+            finance = _get_vnstock_finance(symbol, period)
             df = finance.balance_sheet(lang=lang, dropna=True, to_df=True)
-            
+
             if df is None or df.empty:
                 return []
-            
+
             if len(df) > limit:
                 df = df.head(limit)
-            
+
             return df.to_dict(orient="records")
         except Exception as e:
             logger.error(f"Error fetching balance sheet for {symbol}: {e}")
             return []
-    
+
     def get_income_statement(
         self, symbol: str, period: str, lang: str, limit: int
     ) -> List[Dict[str, Any]]:
         """Get income statement data."""
         try:
-            finance = get_finance(symbol, period, self.source)
+            finance = _get_vnstock_finance(symbol, period)
             df = finance.income_statement(lang=lang, dropna=True, to_df=True)
-            
+
             if df is None or df.empty:
                 return []
-            
+
             if len(df) > limit:
                 df = df.head(limit)
-            
+
             return df.to_dict(orient="records")
         except Exception as e:
             logger.error(f"Error fetching income statement for {symbol}: {e}")
             return []
-    
+
     def get_cash_flow(
         self, symbol: str, period: str, lang: str, limit: int
     ) -> List[Dict[str, Any]]:
         """Get cash flow statement data."""
         try:
-            finance = get_finance(symbol, period, self.source)
+            finance = _get_vnstock_finance(symbol, period)
             df = finance.cash_flow(lang=lang, dropna=True, to_df=True)
-            
+
             if df is None or df.empty:
                 return []
-            
+
             if len(df) > limit:
                 df = df.head(limit)
-            
+
             return df.to_dict(orient="records")
         except Exception as e:
             logger.error(f"Error fetching cash flow for {symbol}: {e}")
             return []
-    
+
     def get_ratio(
         self, symbol: str, period: str, limit: int
     ) -> List[Dict[str, Any]]:
         """Get financial ratios."""
         try:
-            finance = get_finance(symbol, period, self.source)
+            finance = _get_vnstock_finance(symbol, period)
             df = finance.ratio(flatten_columns=True, separator="_", to_df=True)
-            
+
             if df is None or df.empty:
                 return []
-            
+
             if len(df) > limit:
                 df = df.head(limit)
-            
+
             return df.to_dict(orient="records")
         except Exception as e:
             logger.error(f"Error fetching ratio for {symbol}: {e}")
