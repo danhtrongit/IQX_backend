@@ -1,0 +1,1064 @@
+[
+    {
+        "code": "0001",
+        "en_sector": "Oil & Gas",
+        "vi_sector": "Dầu khí",
+        "level": 1
+    },
+    {
+        "code": "0500",
+        "en_sector": "Oil & Gas",
+        "vi_sector": "Dầu khí",
+        "level": 2
+    },
+    {
+        "code": "0530",
+        "en_sector": "Oil & Gas Producers",
+        "vi_sector": "Sản xuất Dầu khí",
+        "level": 3
+    },
+    {
+        "code": "0533",
+        "en_sector": "Exploration & Production",
+        "vi_sector": "Sản xuất và Khai thác dầu khí",
+        "level": 4
+    },
+    {
+        "code": "0537",
+        "en_sector": "Integrated Oil & Gas",
+        "vi_sector": "Tổ hợp Dầu khí",
+        "level": 4
+    },
+    {
+        "code": "0570",
+        "en_sector": "Oil Equipment, Services & Distribution",
+        "vi_sector": "Thiết bị, Dịch vụ và Phân phối Dầu khí",
+        "level": 3
+    },
+    {
+        "code": "0573",
+        "en_sector": "Oil Equipment & Services",
+        "vi_sector": "Thiết bị và Dịch vụ Dầu khí",
+        "level": 4
+    },
+    {
+        "code": "0577",
+        "en_sector": "Pipelines",
+        "vi_sector": "Ống dẫn Dầu",
+        "level": 4
+    },
+    {
+        "code": "0580",
+        "en_sector": "Alternative Fuels",
+        "vi_sector": "Năng lượng thay thế",
+        "level": 3
+    },
+    {
+        "code": "0583",
+        "en_sector": "Renewable Energy Equipment",
+        "vi_sector": "Thiết bị năng lượng tái chế",
+        "level": 4
+    },
+    {
+        "code": "0587",
+        "en_sector": "Alternative Fuels",
+        "vi_sector": "Nhiên liệu thay thế",
+        "level": 4
+    },
+    {
+        "code": "1000",
+        "en_sector": "Basic Materials",
+        "vi_sector": "Nguyên vật liệu",
+        "level": 1
+    },
+    {
+        "code": "1300",
+        "en_sector": "Chemicals",
+        "vi_sector": "Hóa chất",
+        "level": 2
+    },
+    {
+        "code": "1350",
+        "en_sector": "Chemicals",
+        "vi_sector": "Hóa chất",
+        "level": 3
+    },
+    {
+        "code": "1353",
+        "en_sector": "Commodity Chemicals",
+        "vi_sector": "Nhựa, cao su & sợi",
+        "level": 4
+    },
+    {
+        "code": "1357",
+        "en_sector": "Specialty Chemicals",
+        "vi_sector": "Sản phẩm hóa dầu, Nông dược & Hóa chất khác",
+        "level": 4
+    },
+    {
+        "code": "1700",
+        "en_sector": "Basic Resources",
+        "vi_sector": "Tài nguyên Cơ bản",
+        "level": 2
+    },
+    {
+        "code": "1730",
+        "en_sector": "Forestry & Paper",
+        "vi_sector": "Lâm nghiệp và Giấy",
+        "level": 3
+    },
+    {
+        "code": "1733",
+        "en_sector": "Forestry",
+        "vi_sector": "Lâm sản và Chế biến gỗ",
+        "level": 4
+    },
+    {
+        "code": "1737",
+        "en_sector": "Paper",
+        "vi_sector": "Sản xuất giấy",
+        "level": 4
+    },
+    {
+        "code": "1750",
+        "en_sector": "Industrial Metals & Mining",
+        "vi_sector": "Kim loại",
+        "level": 3
+    },
+    {
+        "code": "1753",
+        "en_sector": "Aluminum",
+        "vi_sector": "Nhôm",
+        "level": 4
+    },
+    {
+        "code": "1755",
+        "en_sector": "Nonferrous Metals",
+        "vi_sector": "Kim Loại màu",
+        "level": 4
+    },
+    {
+        "code": "1757",
+        "en_sector": "Steel",
+        "vi_sector": "Thép và sản phẩm thép",
+        "level": 4
+    },
+    {
+        "code": "1770",
+        "en_sector": "Mining",
+        "vi_sector": "Khai khoáng",
+        "level": 3
+    },
+    {
+        "code": "1771",
+        "en_sector": "Coal",
+        "vi_sector": "Khai thác Than",
+        "level": 4
+    },
+    {
+        "code": "1773",
+        "en_sector": "Diamonds & Gemstones",
+        "vi_sector": "Đá quý và Kim cương",
+        "level": 4
+    },
+    {
+        "code": "1775",
+        "en_sector": "General Mining",
+        "vi_sector": "Khai khoáng",
+        "level": 4
+    },
+    {
+        "code": "1777",
+        "en_sector": "Gold Mining",
+        "vi_sector": "Khai thác vàng",
+        "level": 4
+    },
+    {
+        "code": "1779",
+        "en_sector": "Platinum & Precious Metals",
+        "vi_sector": "Bạch kim & Kim loại quý khác",
+        "level": 4
+    },
+    {
+        "code": "2000",
+        "en_sector": "Industrials",
+        "vi_sector": "Công nghiệp",
+        "level": 1
+    },
+    {
+        "code": "2300",
+        "en_sector": "Construction & Materials",
+        "vi_sector": "Xây dựng và Vật liệu",
+        "level": 2
+    },
+    {
+        "code": "2350",
+        "en_sector": "Construction & Materials",
+        "vi_sector": "Xây dựng và Vật liệu",
+        "level": 3
+    },
+    {
+        "code": "2353",
+        "en_sector": "Building Materials & Fixtures",
+        "vi_sector": "Vật liệu xây dựng & Nội thất",
+        "level": 4
+    },
+    {
+        "code": "2357",
+        "en_sector": "Heavy Construction",
+        "vi_sector": "Xây dựng",
+        "level": 4
+    },
+    {
+        "code": "2700",
+        "en_sector": "Industrial Goods & Services",
+        "vi_sector": "Hàng & Dịch vụ Công nghiệp",
+        "level": 2
+    },
+    {
+        "code": "2710",
+        "en_sector": "Aerospace & Defense",
+        "vi_sector": "Hàng không & Quốc phòng",
+        "level": 3
+    },
+    {
+        "code": "2713",
+        "en_sector": "Aerospace",
+        "vi_sector": "Hàng không",
+        "level": 4
+    },
+    {
+        "code": "2717",
+        "en_sector": "Defense",
+        "vi_sector": "Quốc phòng",
+        "level": 4
+    },
+    {
+        "code": "2720",
+        "en_sector": "General Industrials",
+        "vi_sector": "Hàng công nghiệp",
+        "level": 3
+    },
+    {
+        "code": "2723",
+        "en_sector": "Containers & Packaging",
+        "vi_sector": "Containers & Đóng gói",
+        "level": 4
+    },
+    {
+        "code": "2727",
+        "en_sector": "Diversified Industrials",
+        "vi_sector": "Công nghiệp phức hợp",
+        "level": 4
+    },
+    {
+        "code": "2730",
+        "en_sector": "Electronic & Electrical Equipment",
+        "vi_sector": "Điện tử & Thiết bị điện",
+        "level": 3
+    },
+    {
+        "code": "2733",
+        "en_sector": "Electrical Components & Equipment",
+        "vi_sector": "Hàng điện & điện tử",
+        "level": 4
+    },
+    {
+        "code": "2737",
+        "en_sector": "Electronic Equipment",
+        "vi_sector": "Thiết bị điện",
+        "level": 4
+    },
+    {
+        "code": "2750",
+        "en_sector": "Industrial Engineering",
+        "vi_sector": "Công nghiệp nặng",
+        "level": 3
+    },
+    {
+        "code": "2753",
+        "en_sector": "Commercial Vehicles & Trucks",
+        "vi_sector": "Xe tải & Đóng tàu",
+        "level": 4
+    },
+    {
+        "code": "2757",
+        "en_sector": "Industrial Machinery",
+        "vi_sector": "Máy công nghiệp",
+        "level": 4
+    },
+    {
+        "code": "2770",
+        "en_sector": "Industrial Transportation",
+        "vi_sector": "Vận tải",
+        "level": 3
+    },
+    {
+        "code": "2771",
+        "en_sector": "Delivery Services",
+        "vi_sector": "Chuyển phát nhanh",
+        "level": 4
+    },
+    {
+        "code": "2773",
+        "en_sector": "Marine Transportation",
+        "vi_sector": "Vận tải Thủy",
+        "level": 4
+    },
+    {
+        "code": "2775",
+        "en_sector": "Railroads",
+        "vi_sector": "Đường sắt",
+        "level": 4
+    },
+    {
+        "code": "2777",
+        "en_sector": "Transportation Services",
+        "vi_sector": "Kho bãi, hậu cần và bảo dưỡng",
+        "level": 4
+    },
+    {
+        "code": "2779",
+        "en_sector": "Trucking",
+        "vi_sector": "Dịch vụ vận tải",
+        "level": 4
+    },
+    {
+        "code": "2790",
+        "en_sector": "Support Services",
+        "vi_sector": "Tư vấn & Hỗ trợ Kinh doanh",
+        "level": 3
+    },
+    {
+        "code": "2791",
+        "en_sector": "Business Support Services",
+        "vi_sector": "Tư vấn & Hỗ trợ KD",
+        "level": 4
+    },
+    {
+        "code": "2793",
+        "en_sector": "Business Training & Employment Agencies",
+        "vi_sector": "Đào tạo & Việc làm",
+        "level": 4
+    },
+    {
+        "code": "2795",
+        "en_sector": "Financial Administration",
+        "vi_sector": "Quản lý Tài chính",
+        "level": 4
+    },
+    {
+        "code": "2797",
+        "en_sector": "Industrial Suppliers",
+        "vi_sector": "Nhà cung cấp thiết bị",
+        "level": 4
+    },
+    {
+        "code": "2799",
+        "en_sector": "Waste & Disposal Services",
+        "vi_sector": "Chất thải & Môi trường",
+        "level": 4
+    },
+    {
+        "code": "3000",
+        "en_sector": "Consumer Goods",
+        "vi_sector": "Hàng Tiêu dùng",
+        "level": 1
+    },
+    {
+        "code": "3300",
+        "en_sector": "Automobiles & Parts",
+        "vi_sector": "Ô tô và phụ tùng",
+        "level": 2
+    },
+    {
+        "code": "3350",
+        "en_sector": "Automobiles & Parts",
+        "vi_sector": "Ô tô và phụ tùng",
+        "level": 3
+    },
+    {
+        "code": "3353",
+        "en_sector": "Automobiles",
+        "vi_sector": "Sản xuất ô tô",
+        "level": 4
+    },
+    {
+        "code": "3355",
+        "en_sector": "Auto Parts",
+        "vi_sector": "Phụ tùng ô tô",
+        "level": 4
+    },
+    {
+        "code": "3357",
+        "en_sector": "Tires",
+        "vi_sector": "Lốp xe",
+        "level": 4
+    },
+    {
+        "code": "3500",
+        "en_sector": "Food & Beverage",
+        "vi_sector": "Thực phẩm và đồ uống",
+        "level": 2
+    },
+    {
+        "code": "3530",
+        "en_sector": "Beverages",
+        "vi_sector": "Bia và đồ uống",
+        "level": 3
+    },
+    {
+        "code": "3533",
+        "en_sector": "Brewers",
+        "vi_sector": "Sản xuất bia",
+        "level": 4
+    },
+    {
+        "code": "3535",
+        "en_sector": "Distillers & Vintners",
+        "vi_sector": "Vang & Rượu mạnh",
+        "level": 4
+    },
+    {
+        "code": "3537",
+        "en_sector": "Soft Drinks",
+        "vi_sector": "Đồ uống & giải khát",
+        "level": 4
+    },
+    {
+        "code": "3570",
+        "en_sector": "Food Producers",
+        "vi_sector": "Sản xuất thực phẩm",
+        "level": 3
+    },
+    {
+        "code": "3573",
+        "en_sector": "Farming & Fishing",
+        "vi_sector": "Nuôi trồng nông & hải sản",
+        "level": 4
+    },
+    {
+        "code": "3577",
+        "en_sector": "Food Products",
+        "vi_sector": "Thực phẩm",
+        "level": 4
+    },
+    {
+        "code": "3700",
+        "en_sector": "Personal & Household Goods",
+        "vi_sector": "Hàng cá nhân & Gia dụng",
+        "level": 2
+    },
+    {
+        "code": "3720",
+        "en_sector": "Household Goods & Home Construction",
+        "vi_sector": "Hàng gia dụng",
+        "level": 3
+    },
+    {
+        "code": "3722",
+        "en_sector": "Durable Household Products",
+        "vi_sector": "Đồ gia dụng lâu bền",
+        "level": 4
+    },
+    {
+        "code": "3724",
+        "en_sector": "Nondurable Household Products",
+        "vi_sector": "Đồ gia dụng một lần",
+        "level": 4
+    },
+    {
+        "code": "3726",
+        "en_sector": "Furnishings",
+        "vi_sector": "Thiết bị gia dụng",
+        "level": 4
+    },
+    {
+        "code": "3728",
+        "en_sector": "Home Construction",
+        "vi_sector": "Xây nhà",
+        "level": 4
+    },
+    {
+        "code": "3740",
+        "en_sector": "Leisure Goods",
+        "vi_sector": "Hàng hóa giải trí",
+        "level": 3
+    },
+    {
+        "code": "3743",
+        "en_sector": "Consumer Electronics",
+        "vi_sector": "Điện tử tiêu dùng",
+        "level": 4
+    },
+    {
+        "code": "3745",
+        "en_sector": "Recreational Products",
+        "vi_sector": "Sản phẩm nghệ thuật",
+        "level": 4
+    },
+    {
+        "code": "3747",
+        "en_sector": "Toys",
+        "vi_sector": "Đồ chơi",
+        "level": 4
+    },
+    {
+        "code": "3760",
+        "en_sector": "Personal Goods",
+        "vi_sector": "Hàng cá nhân",
+        "level": 3
+    },
+    {
+        "code": "3763",
+        "en_sector": "Clothing & Accessories",
+        "vi_sector": "Hàng May mặc",
+        "level": 4
+    },
+    {
+        "code": "3765",
+        "en_sector": "Footwear",
+        "vi_sector": "Giầy dép",
+        "level": 4
+    },
+    {
+        "code": "3767",
+        "en_sector": "Personal Products",
+        "vi_sector": "Hàng cá nhân",
+        "level": 4
+    },
+    {
+        "code": "3780",
+        "en_sector": "Tobacco",
+        "vi_sector": "Thuốc lá",
+        "level": 3
+    },
+    {
+        "code": "3785",
+        "en_sector": "Tobacco",
+        "vi_sector": "Thuốc lá",
+        "level": 4
+    },
+    {
+        "code": "4000",
+        "en_sector": "Health Care",
+        "vi_sector": "Dược phẩm và Y tế",
+        "level": 1
+    },
+    {
+        "code": "4500",
+        "en_sector": "Health Care",
+        "vi_sector": "Y tế",
+        "level": 2
+    },
+    {
+        "code": "4530",
+        "en_sector": "Health Care Equipment & Services",
+        "vi_sector": "Thiết bị và Dịch vụ Y tế",
+        "level": 3
+    },
+    {
+        "code": "4533",
+        "en_sector": "Health Care Providers",
+        "vi_sector": "Chăm sóc y tế",
+        "level": 4
+    },
+    {
+        "code": "4535",
+        "en_sector": "Medical Equipment",
+        "vi_sector": "Thiết bị y tế",
+        "level": 4
+    },
+    {
+        "code": "4537",
+        "en_sector": "Medical Supplies",
+        "vi_sector": "Dụng cụ y tế",
+        "level": 4
+    },
+    {
+        "code": "4570",
+        "en_sector": "Pharmaceuticals & Biotechnology",
+        "vi_sector": "Dược phẩm",
+        "level": 3
+    },
+    {
+        "code": "4573",
+        "en_sector": "Biotechnology",
+        "vi_sector": "Công nghệ sinh học",
+        "level": 4
+    },
+    {
+        "code": "4577",
+        "en_sector": "Pharmaceuticals",
+        "vi_sector": "Dược phẩm",
+        "level": 4
+    },
+    {
+        "code": "5000",
+        "en_sector": "Consumer Services",
+        "vi_sector": "Dịch vụ Tiêu dùng",
+        "level": 1
+    },
+    {
+        "code": "5300",
+        "en_sector": "Retail",
+        "vi_sector": "Bán lẻ",
+        "level": 2
+    },
+    {
+        "code": "5330",
+        "en_sector": "Food & Drug Retailers",
+        "vi_sector": "Phân phối thực phẩm & dược phẩm",
+        "level": 3
+    },
+    {
+        "code": "5333",
+        "en_sector": "Drug Retailers",
+        "vi_sector": "Phân phối dược phẩm",
+        "level": 4
+    },
+    {
+        "code": "5337",
+        "en_sector": "Food Retailers & Wholesalers",
+        "vi_sector": "Phân phối thực phẩm",
+        "level": 4
+    },
+    {
+        "code": "5370",
+        "en_sector": "General Retailers",
+        "vi_sector": "Bán lẻ",
+        "level": 3
+    },
+    {
+        "code": "5371",
+        "en_sector": "Apparel Retailers",
+        "vi_sector": "Bán lẻ hàng may mặc",
+        "level": 4
+    },
+    {
+        "code": "5373",
+        "en_sector": "Broadline Retailers",
+        "vi_sector": "Bán lẻ phức hợp",
+        "level": 4
+    },
+    {
+        "code": "5375",
+        "en_sector": "Home Improvement Retailers",
+        "vi_sector": "Phân phối nội thất",
+        "level": 4
+    },
+    {
+        "code": "5377",
+        "en_sector": "Specialized Consumer Services",
+        "vi_sector": "Dịch vụ tiêu dùng chuyên ngành",
+        "level": 4
+    },
+    {
+        "code": "5379",
+        "en_sector": "Specialty Retailers",
+        "vi_sector": "Phân phối hàng chuyên dụng",
+        "level": 4
+    },
+    {
+        "code": "5500",
+        "en_sector": "Media",
+        "vi_sector": "Truyền thông",
+        "level": 2
+    },
+    {
+        "code": "5550",
+        "en_sector": "Media",
+        "vi_sector": "Truyền thông",
+        "level": 3
+    },
+    {
+        "code": "5553",
+        "en_sector": "Broadcasting & Entertainment",
+        "vi_sector": "Giải trí & Truyền thông",
+        "level": 4
+    },
+    {
+        "code": "5555",
+        "en_sector": "Media Agencies",
+        "vi_sector": "Dịch vụ truyền thông",
+        "level": 4
+    },
+    {
+        "code": "5557",
+        "en_sector": "Publishing",
+        "vi_sector": "Sách, ấn bản & sản phẩm văn hóa",
+        "level": 4
+    },
+    {
+        "code": "5700",
+        "en_sector": "Travel & Leisure",
+        "vi_sector": "Du lịch và Giải trí",
+        "level": 2
+    },
+    {
+        "code": "5750",
+        "en_sector": "Travel & Leisure",
+        "vi_sector": "Du lịch & Giải trí",
+        "level": 3
+    },
+    {
+        "code": "5751",
+        "en_sector": "Airlines",
+        "vi_sector": "Hàng không",
+        "level": 4
+    },
+    {
+        "code": "5752",
+        "en_sector": "Gambling",
+        "vi_sector": "Gambling",
+        "level": 4
+    },
+    {
+        "code": "5753",
+        "en_sector": "Hotels",
+        "vi_sector": "Khách sạn",
+        "level": 4
+    },
+    {
+        "code": "5755",
+        "en_sector": "Recreational Services",
+        "vi_sector": "Dịch vụ giải trí",
+        "level": 4
+    },
+    {
+        "code": "5757",
+        "en_sector": "Restaurants & Bars",
+        "vi_sector": "Nhà hàng và quán bar",
+        "level": 4
+    },
+    {
+        "code": "5759",
+        "en_sector": "Travel & Tourism",
+        "vi_sector": "Vận tải hành khách & Du lịch",
+        "level": 4
+    },
+    {
+        "code": "6000",
+        "en_sector": "Telecommunications",
+        "vi_sector": "Viễn thông",
+        "level": 1
+    },
+    {
+        "code": "6500",
+        "en_sector": "Telecommunications",
+        "vi_sector": "Viễn thông",
+        "level": 2
+    },
+    {
+        "code": "6530",
+        "en_sector": "Fixed Line Telecommunications",
+        "vi_sector": "Viễn thông cố định",
+        "level": 3
+    },
+    {
+        "code": "6535",
+        "en_sector": "Fixed Line Telecommunications",
+        "vi_sector": "Viễn thông cố định",
+        "level": 4
+    },
+    {
+        "code": "6570",
+        "en_sector": "Mobile Telecommunications",
+        "vi_sector": "Viễn thông di động",
+        "level": 3
+    },
+    {
+        "code": "6575",
+        "en_sector": "Mobile Telecommunications",
+        "vi_sector": "Viễn thông di động",
+        "level": 4
+    },
+    {
+        "code": "7000",
+        "en_sector": "Utilities",
+        "vi_sector": "Tiện ích Cộng đồng",
+        "level": 1
+    },
+    {
+        "code": "7500",
+        "en_sector": "Utilities",
+        "vi_sector": "Điện, nước & xăng dầu khí đốt",
+        "level": 2
+    },
+    {
+        "code": "7530",
+        "en_sector": "Electricity",
+        "vi_sector": "Sản xuất & Phân phối Điện",
+        "level": 3
+    },
+    {
+        "code": "7535",
+        "en_sector": "Conventional Electricity",
+        "vi_sector": "Sản xuất & Phân phối Điện",
+        "level": 4
+    },
+    {
+        "code": "7570",
+        "en_sector": "Gas, Water & Multi-utilities",
+        "vi_sector": "Nước & Khí đốt",
+        "level": 3
+    },
+    {
+        "code": "7573",
+        "en_sector": "Gas Distribution",
+        "vi_sector": "Phân phối xăng dầu & khí đốt",
+        "level": 4
+    },
+    {
+        "code": "7575",
+        "en_sector": "Multiutilities",
+        "vi_sector": "Tiện ích khác",
+        "level": 4
+    },
+    {
+        "code": "7577",
+        "en_sector": "Water",
+        "vi_sector": "Nước",
+        "level": 4
+    },
+    {
+        "code": "8000",
+        "en_sector": "Financials",
+        "vi_sector": "Tài chính",
+        "level": 1
+    },
+    {
+        "code": "8300",
+        "en_sector": "Banks",
+        "vi_sector": "Ngân hàng",
+        "level": 2
+    },
+    {
+        "code": "8301",
+        "en_sector": "Banks",
+        "vi_sector": "Ngân hàng",
+        "level": 1
+    },
+    {
+        "code": "8350",
+        "en_sector": "Banks",
+        "vi_sector": "Ngân hàng",
+        "level": 3
+    },
+    {
+        "code": "8355",
+        "en_sector": "Banks",
+        "vi_sector": "Ngân hàng",
+        "level": 4
+    },
+    {
+        "code": "8500",
+        "en_sector": "Insurance",
+        "vi_sector": "Bảo hiểm",
+        "level": 2
+    },
+    {
+        "code": "8530",
+        "en_sector": "Nonlife Insurance",
+        "vi_sector": "Bảo hiểm phi nhân thọ",
+        "level": 3
+    },
+    {
+        "code": "8532",
+        "en_sector": "Full Line Insurance",
+        "vi_sector": "Bảo hiểm phức hợp",
+        "level": 4
+    },
+    {
+        "code": "8534",
+        "en_sector": "Insurance Brokers",
+        "vi_sector": "Môi giới bảo hiểm",
+        "level": 4
+    },
+    {
+        "code": "8536",
+        "en_sector": "Property & Casualty Insurance",
+        "vi_sector": "Bảo hiểm phi nhân thọ",
+        "level": 4
+    },
+    {
+        "code": "8538",
+        "en_sector": "Reinsurance",
+        "vi_sector": "Tái bảo hiểm",
+        "level": 4
+    },
+    {
+        "code": "8570",
+        "en_sector": "Life Insurance",
+        "vi_sector": "Bảo hiểm nhân thọ",
+        "level": 3
+    },
+    {
+        "code": "8575",
+        "en_sector": "Life Insurance",
+        "vi_sector": "Bảo hiểm nhân thọ",
+        "level": 4
+    },
+    {
+        "code": "8600",
+        "en_sector": "Real Estate",
+        "vi_sector": "Bất động sản",
+        "level": 2
+    },
+    {
+        "code": "8630",
+        "en_sector": "Real Estate Investment & Services",
+        "vi_sector": "Bất động sản",
+        "level": 3
+    },
+    {
+        "code": "8633",
+        "en_sector": "Real Estate Holding & Development",
+        "vi_sector": "Bất động sản",
+        "level": 4
+    },
+    {
+        "code": "8637",
+        "en_sector": "Real Estate Services",
+        "vi_sector": "Tư Vấn, Định giá, Môi giới Bất động sản",
+        "level": 4
+    },
+    {
+        "code": "8670",
+        "en_sector": "Real Estate Investment Trusts",
+        "vi_sector": "Quỹ ủy thác BĐS",
+        "level": 3
+    },
+    {
+        "code": "8677",
+        "en_sector": "Real Estate Investment Trusts",
+        "vi_sector": "Quỹ ủy thác BĐS",
+        "level": 4
+    },
+    {
+        "code": "8700",
+        "en_sector": "Financial Services",
+        "vi_sector": "Dịch vụ tài chính",
+        "level": 2
+    },
+    {
+        "code": "8770",
+        "en_sector": "Financial Services",
+        "vi_sector": "Dịch vụ tài chính",
+        "level": 3
+    },
+    {
+        "code": "8771",
+        "en_sector": "Asset Managers",
+        "vi_sector": "Quản lý tài sản",
+        "level": 4
+    },
+    {
+        "code": "8773",
+        "en_sector": "Consumer Finance",
+        "vi_sector": "Tài chính cá nhân",
+        "level": 4
+    },
+    {
+        "code": "8775",
+        "en_sector": "Specialty Finance",
+        "vi_sector": "Tài chính đặc biệt",
+        "level": 4
+    },
+    {
+        "code": "8777",
+        "en_sector": "Investment Services",
+        "vi_sector": "Môi giới chứng khoán",
+        "level": 4
+    },
+    {
+        "code": "8779",
+        "en_sector": "Mortgage Finance",
+        "vi_sector": "Cầm cố",
+        "level": 4
+    },
+    {
+        "code": "8980",
+        "en_sector": "Equity Investment Instruments",
+        "vi_sector": "Quỹ đầu tư",
+        "level": 3
+    },
+    {
+        "code": "8985",
+        "en_sector": "Equity Investment Instruments",
+        "vi_sector": "Quỹ đầu tư",
+        "level": 4
+    },
+    {
+        "code": "9000",
+        "en_sector": "Technology",
+        "vi_sector": "Công nghệ Thông tin",
+        "level": 1
+    },
+    {
+        "code": "9500",
+        "en_sector": "Technology",
+        "vi_sector": "Công nghệ Thông tin",
+        "level": 2
+    },
+    {
+        "code": "9530",
+        "en_sector": "Software & Computer Services",
+        "vi_sector": "Phần mềm & Dịch vụ Máy tính",
+        "level": 3
+    },
+    {
+        "code": "9533",
+        "en_sector": "Computer Services",
+        "vi_sector": "Dịch vụ Máy tính",
+        "level": 4
+    },
+    {
+        "code": "9535",
+        "en_sector": "Internet",
+        "vi_sector": "Internet",
+        "level": 4
+    },
+    {
+        "code": "9537",
+        "en_sector": "Software",
+        "vi_sector": "Phần mềm",
+        "level": 4
+    },
+    {
+        "code": "9570",
+        "en_sector": "Technology Hardware & Equipment",
+        "vi_sector": "Thiết bị và Phần cứng",
+        "level": 3
+    },
+    {
+        "code": "9572",
+        "en_sector": "Computer Hardware",
+        "vi_sector": "Phần cứng",
+        "level": 4
+    },
+    {
+        "code": "9574",
+        "en_sector": "Electronic Office Equipment",
+        "vi_sector": "Thiết bị văn phòng",
+        "level": 4
+    },
+    {
+        "code": "9576",
+        "en_sector": "Semiconductors",
+        "vi_sector": "Bán dẫn",
+        "level": 4
+    },
+    {
+        "code": "9578",
+        "en_sector": "Telecommunications Equipment",
+        "vi_sector": "Thiết bị viễn thông",
+        "level": 4
+    },
+    {
+        "code": "OTHER",
+        "en_sector": "OTHER",
+        "vi_sector": "OTHER",
+        "level": 4
+    }
+]
