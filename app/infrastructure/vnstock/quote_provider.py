@@ -88,17 +88,17 @@ class VnstockQuoteProvider:
                     "symbol": self._get_col(row, ["listing_symbol", "symbol"]),
                     "exchange": self._get_col(row, ["listing_exchange", "exchange"]),
                     "organ_name": self._get_col(row, ["listing_organ_name", "organ_name"]),
-                    "price": self._get_col(row, ["match_price", "price"]),
+                    "price": self._get_col(row, ["match_match_price", "match_price", "price"]),
                     "change": self._get_col(row, ["match_price_change", "change"]),
                     "change_percent": self._get_col(row, ["match_percent_price_change", "change_percent"]),
-                    "volume": self._get_col(row, ["match_total_volume", "volume"]),
-                    "value": self._get_col(row, ["match_total_value", "value"]),
-                    "ref_price": self._get_col(row, ["listing_reference_price", "ref_price"]),
-                    "ceiling": self._get_col(row, ["listing_ceiling_price", "ceiling"]),
-                    "floor": self._get_col(row, ["listing_floor_price", "floor"]),
+                    "volume": self._get_col(row, ["match_accumulated_volume", "match_total_volume", "volume"]),
+                    "value": self._get_col(row, ["match_accumulated_value", "match_total_value", "value"]),
+                    "ref_price": self._get_col(row, ["listing_ref_price", "match_reference_price", "listing_reference_price", "ref_price"]),
+                    "ceiling": self._get_col(row, ["listing_ceiling", "match_ceiling_price", "listing_ceiling_price", "ceiling"]),
+                    "floor": self._get_col(row, ["listing_floor", "match_floor_price", "listing_floor_price", "floor"]),
                     "open": self._get_col(row, ["match_open_price", "open"]),
-                    "high": self._get_col(row, ["match_highest_price", "high"]),
-                    "low": self._get_col(row, ["match_lowest_price", "low"]),
+                    "high": self._get_col(row, ["match_highest", "match_highest_price", "high"]),
+                    "low": self._get_col(row, ["match_lowest", "match_lowest_price", "low"]),
                     "bid_1_price": self._get_col(row, ["bid_ask_bid_1_price"]),
                     "bid_1_volume": self._get_col(row, ["bid_ask_bid_1_volume"]),
                     "bid_2_price": self._get_col(row, ["bid_ask_bid_2_price"]),
@@ -114,6 +114,16 @@ class VnstockQuoteProvider:
                     "foreign_buy_volume": self._get_col(row, ["match_foreign_buy_volume"]),
                     "foreign_sell_volume": self._get_col(row, ["match_foreign_sell_volume"]),
                 }
+
+                # Calculate change/change_percent if not provided
+                price = item.get("price")
+                ref_price = item.get("ref_price")
+                if price is not None and ref_price is not None and ref_price > 0:
+                    if item.get("change") is None:
+                        item["change"] = round(price - ref_price, 2)
+                    if item.get("change_percent") is None:
+                        item["change_percent"] = round((price - ref_price) / ref_price * 100, 2)
+
                 result.append(item)
             
             return result

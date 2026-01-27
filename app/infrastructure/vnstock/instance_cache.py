@@ -1,13 +1,13 @@
 """
-Cached vnstock_data instances to avoid repeated initialization overhead.
+Cached vnstock instances to avoid repeated initialization overhead.
 
-vnstock_data classes have initialization overhead (HTTP setup, validation, etc.)
+vnstock classes have initialization overhead (HTTP setup, validation, etc.)
 Caching instances significantly improves performance for repeated calls.
 """
 from typing import Dict, Any, Optional
 from threading import Lock
 
-# Thread-safe caches for vnstock_data instances
+# Thread-safe caches for vnstock instances
 _quote_cache: Dict[str, Any] = {}
 _trading_cache: Dict[str, Any] = {}
 _trading_explorer_cache: Dict[str, Any] = {}  # For vnstock_data.explorer.vci.trading
@@ -28,7 +28,7 @@ def get_quote(symbol: str, source: str = "vci"):
     if key not in _quote_cache:
         with _lock:
             if key not in _quote_cache:
-                from vnstock_data.api.quote import Quote
+                from vnstock import Quote
                 _quote_cache[key] = Quote(source=source, symbol=symbol.upper(), show_log=False)
     return _quote_cache[key]
 
@@ -39,7 +39,7 @@ def get_trading(symbol: str = "", source: str = "vci"):
     if key not in _trading_cache:
         with _lock:
             if key not in _trading_cache:
-                from vnstock_data.api.trading import Trading
+                from vnstock import Trading
                 _trading_cache[key] = Trading(
                     source=source, 
                     symbol=symbol.upper() or "VCI", 
@@ -54,7 +54,7 @@ def get_company(symbol: str, source: str = "vci"):
     if key not in _company_cache:
         with _lock:
             if key not in _company_cache:
-                from vnstock_data.api.company import Company
+                from vnstock import Company
                 _company_cache[key] = Company(source=source, symbol=symbol.upper(), show_log=False)
     return _company_cache[key]
 
@@ -65,7 +65,7 @@ def get_finance(symbol: str, period: str = "quarter", source: str = "vci"):
     if key not in _finance_cache:
         with _lock:
             if key not in _finance_cache:
-                from vnstock_data.api.financial import Finance
+                from vnstock import Finance
                 _finance_cache[key] = Finance(
                     source=source,
                     symbol=symbol.upper(),
@@ -81,7 +81,7 @@ def get_listing(source: str = "vci"):
     if source not in _listing_cache:
         with _lock:
             if source not in _listing_cache:
-                from vnstock_data.api.listing import Listing
+                from vnstock import Listing
                 _listing_cache[source] = Listing(source=source, show_log=False)
     return _listing_cache[source]
 
@@ -91,7 +91,7 @@ def get_market(source: str = "vnd"):
     if source not in _market_cache:
         with _lock:
             if source not in _market_cache:
-                from vnstock_data.api.market import Market
+                from vnstock import Market
                 _market_cache[source] = Market(source=source, show_log=False)
     return _market_cache[source]
 
@@ -101,7 +101,7 @@ def get_top_stock(source: str = "vnd"):
     if source not in _top_stock_cache:
         with _lock:
             if source not in _top_stock_cache:
-                from vnstock_data.api.insight import TopStock
+                from vnstock import TopStock
                 _top_stock_cache[source] = TopStock(source=source)
     return _top_stock_cache[source]
 
@@ -111,7 +111,7 @@ def get_macro(source: str = "mbk"):
     if source not in _macro_cache:
         with _lock:
             if source not in _macro_cache:
-                from vnstock_data.api.macro import Macro
+                from vnstock import Macro
                 _macro_cache[source] = Macro(source=source, show_log=False)
     return _macro_cache[source]
 
@@ -121,18 +121,18 @@ def get_commodity(source: str = "spl"):
     if source not in _commodity_cache:
         with _lock:
             if source not in _commodity_cache:
-                from vnstock_data.api.commodity import CommodityPrice
+                from vnstock import CommodityPrice
                 _commodity_cache[source] = CommodityPrice(source=source, show_log=False)
     return _commodity_cache[source]
 
 
 def get_trading_explorer(symbol: str):
-    """Get cached Trading instance from vnstock_data.explorer.vci.trading."""
+    """Get cached Trading instance from vnstock.explorer.vci.trading."""
     key = symbol.upper()
     if key not in _trading_explorer_cache:
         with _lock:
             if key not in _trading_explorer_cache:
-                from vnstock_data.explorer.vci.trading import Trading
+                from vnstock.explorer.vci.trading import Trading
                 _trading_explorer_cache[key] = Trading(symbol=key, show_log=False)
     return _trading_explorer_cache[key]
 
