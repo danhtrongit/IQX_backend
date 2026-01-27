@@ -1,0 +1,301 @@
+{
+  "candlesticks": [
+    {
+      "id": 1,
+      "name": "Doji",
+      "style": "neutral",
+      "signal": "Trung tính",
+      "reliability": "Trung tính",
+      "description": "Thể hiện trong phiên giá đi được khá nhiều nhưng kết thúc về gần điểm xuất phát. Thị trường do dự.",
+      "image": "doji.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Gravestone Doji",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Cao",
+      "description": "Dấu hiệu từ chối mức giá cao.",
+      "image": "gravestone-doji.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Dragonfly Doji",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Trung bình",
+      "description": "Việc hai lần chạm cùng một đáy nhưng không phá vỡ cho thấy lực bán suy yếu, bên mua bắt đầu giành lại thế chủ động.",
+      "image": "dragonfly-doji.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Spinning Top",
+      "style": "neutral",
+      "signal": "Trung tính",
+      "reliability": "Trung tính",
+      "description": "Giá dao động nhiều trong phiên nhưng đóng gần mức mở. Thị trường do dự.",
+      "image": "spinning-top.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Marubozu",
+      "style": "neutral",
+      "signal": "Trung tính",
+      "reliability": "Trung tính",
+      "description": "Marubozu là nến hầu như không có bóng",
+      "image": "marubozu.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Hammer",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Thấp",
+      "description": "Điều này báo hiệu sự suy yếu dần trong tâm lý giá giảm trước đó",
+      "image": "hammer.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Inverted Hammer",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Thấp",
+      "description": "Dấu hiệu thấp sẽ có sự tăng giá trở lại",
+      "image": "inverted-hammer.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Hanging Man",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Trung bình",
+      "description": "Tín hiệu cho thấy áp lực chốt lời/nguồn cung trỗi dậy.",
+      "image": "hanging-man.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Shooting Star",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Thấp",
+      "description": "Trong xu hướng tăng, khoảng trống tăng giá xuất hiện. Nó phục hồi tới một mức giá cao mới, sau đó mất dần sức mạnh và giá đóng cửa gần với mức đáy của nó: đà cho sự thay đổi xu hướng giảm",
+      "image": "shooting-star.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Bullish Engulfing",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Thấp",
+      "description": "Cây nến thứ hai càng nhỏ, thì tín hiệu đảo chiều càng mạnh. Các bóng của cây nến thứ hai không nhất thiết phải bị bao trùm trong thân của cây nến thứ nhất, song nếu được như thế thì càng tốt. Mô hình cần sự xác nhận trên cây nến tiếp theo.",
+      "image": "bullish-engulfing.jpg"
+    },
+    {
+      "id": 11,
+      "name": "Bearish Engulfing",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Trung bình",
+      "description": "Xu hướng tăng đã bắt đầu bị chững lại, và sự giảm giá bắt đầu chiếm lại thế mạnh",
+      "image": "bearish-engulfing.jpg"
+    },
+    {
+      "id": 12,
+      "name": "Bullish Harami",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Thấp",
+      "description": "Cây nến thứ hai càng nhỏ, thì tín hiệu đảo chiều càng mạnh. Các bóng của cây nến thứ hai không nhất thiết phải bị bao trùm trong thân của cây nến thứ nhất, song nếu được như thế thì càng tốt. Mô hình cần sự xác nhận trên cây nến tiếp theo.",
+      "image": "bullish-harami.jpg"
+    },
+    {
+      "id": 13,
+      "name": "Bearish Harami",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Thấp",
+      "description": "Dấu hiệu xu hướng tăng hiện tại đang dần mất đi sức mạnh.",
+      "image": "bearish-harami.jpg"
+    },
+    {
+      "id": 14,
+      "name": "Harami Cross",
+      "style": "neutral",
+      "signal": "Đảo chiều",
+      "reliability": "Thấp",
+      "description": "Chỉ báo Harami Cross rõ ràng hơn chỉ báo Harami cơ bản và là báo hiệu một sự đảo chiều cho sự tăng giá. Cây nến thứ hai càng nhỏ, thì tín hiệu đảo chiều càng mạnh.",
+      "image": "harami-cross.jpg"
+    },
+    {
+      "id": 15,
+      "name": "Piercing Pattern",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Trung bình",
+      "description": "Piercing Pattern là mẫu 2 nến báo hiệu lực mua quay trở lại sau một nhịp giảm",
+      "image": "piercing-pattern.jpg"
+    },
+    {
+      "id": 16,
+      "name": "Dark Cloud Cover",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Cao",
+      "description": "Biểu thị cho một cú đảo chiều mạnh.",
+      "image": "dark-cloud-cover.jpg"
+    },
+    {
+      "id": 17,
+      "name": "Tweezer Tops",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Cao",
+      "description": "Hai lần thử phá đỉnh thất bại báo hiệu cung xuất hiện ở vùng cao.",
+      "image": "tweezer-tops.jpg"
+    },
+    {
+      "id": 18,
+      "name": "Tweezer Bottoms",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Trung bình",
+      "description": "Việc hai lần chạm cùng một đáy nhưng không phá vỡ cho thấy lực bán suy yếu, bên mua bắt đầu giành lại thế chủ động.",
+      "image": "tweezer-bottoms.jpg"
+    },
+    {
+      "id": 19,
+      "name": "Morning Star",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Trung bình",
+      "description": "Mô hình này cho thấy áp lực bán đang suy yếu và phe mua đang dần chiếm ưu thế",
+      "image": "morning-star.jpg"
+    },
+    {
+      "id": 20,
+      "name": "Evening Star",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Cao",
+      "description": "xác nhận bên bán giành lại quyền kiểm soát.",
+      "image": "evening-star.jpg"
+    },
+    {
+      "id": 21,
+      "name": "Morning Doji Star",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Cao",
+      "description": "Morning Doji Star được hiểu như là mô hình Doji Star tăng giá. Nó là một tín hiệu đảo chiều quan trọng.",
+      "image": "morning-doji-star.jpg"
+    },
+    {
+      "id": 22,
+      "name": "Evening Doji Star",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Cao",
+      "description": "niềm tin nhà đầu tư bị lung lay vào xu hướng hiện tại",
+      "image": "evening-doji-star.jpg"
+    },
+    {
+      "id": 23,
+      "name": "Three White Soldiers",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Cao",
+      "description": "Mẫu cho thấy dòng tiền mua chiếm ưu thế liên tục qua nhiều phiên.",
+      "image": "three-white-soldiers.jpg"
+    },
+    {
+      "id": 24,
+      "name": "Three Black Crows",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Cao",
+      "description": "thể hiện bên bán chiếm ưu thế liên tục qua nhiều phiên.",
+      "image": "three-black-crows.jpg"
+    },
+    {
+      "id": 25,
+      "name": "Three Outside Up",
+      "style": "support",
+      "signal": "Đảo chiều xu hướng tăng",
+      "reliability": "Cao",
+      "description": "Mô hình này là sự bổ sung đáng tin cậy cho mô hình Engulfing tiêu chuẩn. Một mô hình Engulfing tăng giá xuất hiện ở hai cây nến đầu tiên.",
+      "image": "three-outside-up.jpg"
+    },
+    {
+      "id": 26,
+      "name": "Three Outside Down",
+      "style": "resistance",
+      "signal": "Đảo chiều xu hướng giảm",
+      "reliability": "Cao",
+      "description": "Mô hình này là sự bổ sung đáng tin cậy cho mô hình Engulfing tiêu chuẩn. Một mô hình Engulfing giảm giá xuất hiện ở hai cây nến đầu tiên",
+      "image": "three-outside-down.jpg"
+    },
+    {
+      "id": 27,
+      "name": "Rising Three Methods",
+      "style": "support",
+      "signal": "Tiếp tục tăng",
+      "reliability": "Cao",
+      "description": "Sự tăng giá càng trở nên mạnh mẽ khi giá đóng phiên đạt tới một mức cao mới",
+      "image": "rising-three-methods.jpg"
+    },
+    {
+      "id": 28,
+      "name": "Falling Three Methods",
+      "style": "resistance",
+      "signal": "Tiếp tục giảm",
+      "reliability": "Cao",
+      "description": "sự xuống giá càng trở nên mạnh mẽ khi giá đóng phiên đạt tới một mức đáy mới",
+      "image": "falling-three-methods.jpg"
+    },
+    {
+      "id": 29,
+      "name": "Upside Gap Three Methods",
+      "style": "support",
+      "signal": "Tiếp tục tăng",
+      "reliability": "Trung bình",
+      "description": "hỗ trợ cho xu hướng đi lên và có thể là nguyên nhân cho việc bán ra mua vào khi thấy có lời một cách tạm thời.",
+      "image": "upside-gap-three-methods.jpg"
+    },
+    {
+      "id": 30,
+      "name": "Downside Gap Three Methods",
+      "style": "resistance",
+      "signal": "Tiếp tục giảm",
+      "reliability": "Cao",
+      "description": "củng cố cho xu thế đi xuống",
+      "image": "downside-gap-three-methods.jpg"
+    },
+    {
+      "id": 31,
+      "name": "Bullish Three Line Strike",
+      "style": "support",
+      "signal": "Tiếp tục tăng",
+      "reliability": "Trung bình",
+      "description": "mẫu hàm ý hấp thụ cung và đảo chiều thất bại của phe bán; nếu phiên sau bật tăng lại, xu hướng tăng thường tiếp diễn.",
+      "image": "bullish-three-line-strike.jpg"
+    },
+    {
+      "id": 32,
+      "name": "Bearish Three Line Strike",
+      "style": "resistance",
+      "signal": "Tiếp tục giảm",
+      "reliability": "Trung bình",
+      "description": "kỳ vọng xu hướng giảm tiếp diễn nếu phiên sau không theo đà tăng mà quay đầu giảm",
+      "image": "bearish-three-line-strike.jpg"
+    }
+  ],
+  "metadata": {
+    "totalPatterns": 32,
+    "categories": {
+      "support": "Nến hỗ trợ (bullish/tăng)",
+      "resistance": "Nến kháng cự (bearish/giảm)",
+      "neutral": "Nến trung tính"
+    },
+    "reliabilityLevels": ["Thấp", "Trung bình", "Cao", "Trung tính"]
+  }
+}

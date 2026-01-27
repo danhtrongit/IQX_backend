@@ -19,6 +19,7 @@ from app.presentation.api.v1.endpoints import (
     score,
     sector,
     ai_insight,
+    pattern,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -41,4 +42,5 @@ api_router.include_router(watchlist.router)
 api_router.include_router(score.router)
 api_router.include_router(sector.router)
 api_router.include_router(ai_insight.router)
+api_router.include_router(pattern.router)
 

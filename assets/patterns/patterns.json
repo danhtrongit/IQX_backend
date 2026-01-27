@@ -1,0 +1,92 @@
+{
+  "patterns": [
+    {
+      "id": 1,
+      "name": "Falling Wedge",
+      "style": "support",
+      "description": "Đỉnh giảm dốc mạnh, đáy cũng giảm nhưng ít hơn. Hai cạnh hội tụ xuống; thường là mô hình bullish (đảo chiều hoặc tiếp diễn tăng).",
+      "strategy": "Quan sát trong downtrend hoặc nhịp điều chỉnh trong uptrend. Mua khi break lên trên cạnh trên nêm, volume cải thiện. Cắt lỗ: dưới đáy nêm hoặc dưới đáy swing cuối. Mục tiêu: chiều cao nêm (đo đoạn rộng nhất) cộng lên từ điểm breakout.",
+      "image": "falling-wedge.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Rising Wedge",
+      "style": "resistance",
+      "description": "Đỉnh tăng, đáy tăng nhanh hơn. Hai cạnh hội tụ lên; thường là mô hình bearish (suy yếu trong uptrend).",
+      "strategy": "Quan sát khi giá tăng nhưng momentum yếu dần. Bán khi break xuống dưới cạnh dưới nêm.",
+      "image": "rising-wedge.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Rounding Bottom",
+      "style": "support",
+      "description": "Đáy cong, từ giảm; đi ngang; tăng dần; hai vai hai bên cao hơn đáy, tương đối cân đối. Thường là đảo chiều tăng dài hạn.",
+      "strategy": "Quan sát giai đoạn đi ngang, hồi phục dần. Mua khi giá vượt vùng rim (đỉnh hai bên đáy tròn)",
+      "image": "rounding-bottom.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Symmetrical Triangle",
+      "style": "support",
+      "description": "Đỉnh giảm dần, đáy tăng dần, biên độ thu hẹp. Tích lũy, chờ cú bùng nổ.",
+      "strategy": "Không bias xu hướng; chờ break theo hướng nào thì trade hướng đó. Mua: khi break lên, sell khi break xuống. Cắt lỗ: bên kia tam giác (dưới đáy/ trên đỉnh gần nhất). Mục tiêu: chiều cao phần rộng nhất tam giác, đo từ điểm breakout.",
+      "image": "symmetrical-triangle.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Ascending Triangle",
+      "style": "support",
+      "description": "Kháng cự gần như ngang, đáy sau cao hơn đáy trước. Lực mua đẩy dần lên, ép giá sát kháng cự.",
+      "strategy": "Chờ break lên trên kháng cự (đóng cửa vượt hẳn). Mua: khi break/retest kháng cự. Cắt lỗ: dưới đáy swing cuối cùng hoặc dưới cạnh dưới tam giác. Mục tiêu: chiều cao tam giác cộng lên từ điểm breakout.",
+      "image": "ascending-triangle.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Descending Triangle",
+      "style": "resistance",
+      "description": "Hỗ trợ gần như ngang, đỉnh sau thấp hơn đỉnh trước. Lực bán đè dần, ép sát hỗ trợ.",
+      "strategy": "Cắt lỗ khi break xuống dưới hỗ trợ. Bán khi giá đóng cửa dưới hỗ trợ hoặc retest không vượt lại.",
+      "image": "descending-triangle.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Rectangle",
+      "style": "neutral",
+      "description": "Giá đi trong range gần như ngang, đỉnh và đáy song song, chạm nhiều lần.",
+      "strategy": "Trading trong hộp: mua gần hỗ trợ, bán gần kháng cự. Breakout: mua khi break lên kháng cự. Bán khi break xuống hỗ trợ.",
+      "image": "rectangle.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Bull Channel",
+      "style": "support",
+      "description": "Hai đường song song dốc lên; giá dao động trong kênh, đáy sau cao hơn đáy trước.",
+      "strategy": "Mua khi giá pullback về cạnh dưới kênh (support động). Cắt lỗ: dưới cạnh dưới hoặc dưới đáy gần nhất. Mục tiêu: giữa kênh hoặc cạnh trên; có thể trailing stop theo cạnh dưới.",
+      "image": "bull-channel.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Bear Channel",
+      "style": "resistance",
+      "description": "Hai đường song song dốc xuống; giá dao động trong kênh, đỉnh sau thấp hơn đỉnh trước.",
+      "strategy": "Bán khi giá hồi lên cạnh trên kênh (resistance động).",
+      "image": "bear-channel.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Cup With Handle",
+      "style": "support",
+      "description": "Cốc: giảm → tạo đáy tròn → hồi lên gần đỉnh cũ. Sau đó là tay cầm: nhịp điều chỉnh nhẹ, nông, nghiêng xuống. Mô hình đảo chiều/tích lũy tăng, rất nổi tiếng (CANSLIM).",
+      "strategy": "Mua khi break lên khỏi đỉnh tay cầm (pivot) với volume. Cắt lỗ: dưới đáy tay cầm.",
+      "image": "cup-with-handle.jpg"
+    }
+  ],
+  "metadata": {
+    "totalPatterns": 10,
+    "categories": {
+      "support": "Mẫu hình hỗ trợ (bullish/tăng)",
+      "resistance": "Mẫu hình kháng cự (bearish/giảm)",
+      "neutral": "Mẫu hình trung tính"
+    }
+  }
+}

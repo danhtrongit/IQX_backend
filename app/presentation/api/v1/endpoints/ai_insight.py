@@ -20,7 +20,7 @@ router = APIRouter(prefix="/ai-insight", tags=["AI Insight"])
 # Configuration for Gemini proxy
 GEMINI_PROXY_URL = "http://43.228.214.64:8317/v1/chat/completions"
 GEMINI_API_KEY = "sk-ucc-m1xMHkNs3BRXUo0M3K2CZUaADGBeCIZWBWQsftA7h"
-GEMINI_MODEL = "gemini-3-pro-preview"
+GEMINI_MODEL = "gemini-claude-opus-4-5-thinking"
 
 # Singleton service
 _ai_insight_service = None

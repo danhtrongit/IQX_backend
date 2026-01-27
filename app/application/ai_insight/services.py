@@ -128,7 +128,7 @@ class AIInsightService:
         self,
         proxy_url: str,
         api_key: str,
-        model: str = "gemini-3-pro-preview",
+        model: str = "gemini-claude-opus-4-5-thinking",
     ):
         self.proxy_url = proxy_url
         self.api_key = api_key
