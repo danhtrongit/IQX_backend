@@ -6,6 +6,8 @@ from app.application.financial.dtos import (
     RatioRequest,
     FinancialReportResponse,
     RatioResponse,
+    ToolkitRequest,
+    ToolkitResponse,
 )
 from app.application.financial.services import FinancialService
 from app.infrastructure.vnstock.financial_provider import VnstockFinancialProvider
@@ -104,13 +106,35 @@ async def get_ratio(
     """Get financial ratios for a symbol."""
     cache = get_cache()
     cache_key = f"financials:ratio:{symbol.upper()}:{period}:{limit}"
-    
+
     cached = await cache.get(cache_key)
     if cached is not None:
         return cached
-    
+
     service = get_financial_service()
     request = RatioRequest(period=period, limit=limit)
     result = await run_sync(service.get_ratio, symbol, request)
+    await cache.set(cache_key, result, CacheTTL.FINANCIALS)
+    return result
+
+
+@router.get("/{symbol}/toolkit", response_model=ToolkitResponse)
+async def get_toolkit(
+    symbol: str,
+    period: str = Query("year", description="Period: quarter or year"),
+    limit: int = Query(8, ge=1, le=20, description="Number of periods"),
+    lang: str = Query("vi", description="Language: vi or en"),
+) -> ToolkitResponse:
+    """Get toolkit data with aggregated financial metrics for analysis."""
+    cache = get_cache()
+    cache_key = f"financials:toolkit:{symbol.upper()}:{period}:{limit}:{lang}"
+
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    service = get_financial_service()
+    request = ToolkitRequest(period=period, limit=limit, lang=lang)
+    result = await run_sync(service.get_toolkit, symbol, request)
     await cache.set(cache_key, result, CacheTTL.FINANCIALS)
     return result

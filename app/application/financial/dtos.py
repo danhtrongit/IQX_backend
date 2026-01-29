@@ -181,9 +181,82 @@ class AnalysisReportItem(BaseModel):
 
 class AnalysisReportResponse(BaseModel):
     """Analysis report response."""
-    
+
     symbol: str
     data: List[AnalysisReportItem]
     total: int
     page: int
     size: int
+
+
+# === Toolkit DTOs ===
+
+class ToolkitRequest(BaseModel):
+    """Toolkit request."""
+
+    period: str = Field("year", description="Period: quarter or year")
+    limit: int = Field(8, ge=1, le=20, description="Number of periods")
+    lang: str = Field("vi", description="Language: vi or en")
+
+
+class ToolkitSummary(BaseModel):
+    """Summary metrics for toolkit."""
+
+    roe: Optional[float] = None
+    roa: Optional[float] = None
+    debt_equity: Optional[float] = None
+    gross_margin: Optional[float] = None
+    net_margin: Optional[float] = None
+    asset_turnover: Optional[float] = None
+
+
+class ToolkitSeriesItem(BaseModel):
+    """Single series item for charts."""
+
+    key: str
+    name: str
+    values: List[Optional[float]]
+
+
+class ToolkitPercentSeriesItem(BaseModel):
+    """Percent series item for stacked charts."""
+
+    key: str
+    values: List[Optional[float]]
+
+
+class ToolkitComposition(BaseModel):
+    """Composition data for stacked bar charts."""
+
+    labels: List[str]
+    series: List[ToolkitSeriesItem]
+    percent_series: List[ToolkitPercentSeriesItem]
+
+
+class ToolkitComparisonMetric(BaseModel):
+    """Comparison metric with YoY/QoQ changes."""
+
+    key: str
+    name: str
+    values: List[Optional[float]]
+    yoy: List[Optional[float]]
+
+
+class ToolkitComparison(BaseModel):
+    """Comparison data for YoY/QoQ charts."""
+
+    labels: List[str]
+    metrics: List[ToolkitComparisonMetric]
+
+
+class ToolkitResponse(BaseModel):
+    """Toolkit response with aggregated financial data."""
+
+    symbol: str
+    type: str  # "bank" or "non-bank"
+    period: str
+    limit: int
+    summary: ToolkitSummary
+    asset_composition: ToolkitComposition
+    revenue_composition: ToolkitComposition
+    comparison: ToolkitComparison

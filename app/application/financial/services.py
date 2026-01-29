@@ -18,6 +18,14 @@ from app.application.financial.dtos import (
     StockDetailResponse,
     AnalysisReportItem,
     AnalysisReportResponse,
+    ToolkitRequest,
+    ToolkitResponse,
+    ToolkitSummary,
+    ToolkitSeriesItem,
+    ToolkitPercentSeriesItem,
+    ToolkitComposition,
+    ToolkitComparisonMetric,
+    ToolkitComparison,
 )
 
 
@@ -149,6 +157,329 @@ class FinancialService:
             data=data,
             count=len(data),
         )
+
+    def get_toolkit(self, symbol: str, request: ToolkitRequest) -> ToolkitResponse:
+        """Get toolkit data with aggregated financial metrics."""
+        symbol = symbol.upper()
+
+        # Fetch raw data
+        balance_data = self.data_provider.get_balance_sheet(
+            symbol=symbol,
+            period=request.period,
+            lang=request.lang,
+            limit=request.limit,
+        )
+        income_data = self.data_provider.get_income_statement(
+            symbol=symbol,
+            period=request.period,
+            lang=request.lang,
+            limit=request.limit,
+        )
+        ratio_data = self.data_provider.get_ratio(
+            symbol=symbol,
+            period=request.period,
+            limit=request.limit,
+        )
+
+        # Determine company type (bank vs non-bank)
+        # For now, default to non-bank. TODO: detect from ICB classification
+        company_type = "non-bank"
+
+        # Build labels from data periods (reverse for chronological order)
+        labels = self._build_period_labels(balance_data, request.period)
+
+        # Build summary from latest ratio data
+        summary = self._build_summary(ratio_data)
+
+        # Build asset composition
+        asset_composition = self._build_asset_composition(balance_data, labels)
+
+        # Build revenue composition
+        revenue_composition = self._build_revenue_composition(income_data, labels)
+
+        # Build comparison data with YoY/QoQ
+        comparison = self._build_comparison(balance_data, income_data, labels, request.period)
+
+        return ToolkitResponse(
+            symbol=symbol,
+            type=company_type,
+            period=request.period,
+            limit=request.limit,
+            summary=summary,
+            asset_composition=asset_composition,
+            revenue_composition=revenue_composition,
+            comparison=comparison,
+        )
+
+    def _build_period_labels(self, data: List[Dict], period: str) -> List[str]:
+        """Build period labels from data, reversed for chronological order."""
+        labels = []
+        for item in reversed(data):
+            year = item.get("Năm") or item.get("Meta_yearReport")
+            quarter = item.get("Kỳ") or item.get("Meta_lengthReport")
+            if period == "year":
+                labels.append(str(year) if year else "—")
+            else:
+                if year and quarter:
+                    labels.append(f"Q{quarter}/{year}")
+                else:
+                    labels.append("—")
+        return labels
+
+    def _build_summary(self, ratio_data: List[Dict]) -> ToolkitSummary:
+        """Build summary metrics from latest ratio data."""
+        if not ratio_data:
+            return ToolkitSummary()
+
+        # Get latest period (first item in list, which is most recent)
+        latest = ratio_data[0]
+
+        def get_ratio(key: str) -> Optional[float]:
+            val = latest.get(key)
+            if val is None:
+                return None
+            try:
+                return float(val)
+            except (ValueError, TypeError):
+                return None
+
+        return ToolkitSummary(
+            roe=get_ratio("Chỉ tiêu khả năng sinh lợi_ROE (%)"),
+            roa=get_ratio("Chỉ tiêu khả năng sinh lợi_ROA (%)"),
+            debt_equity=get_ratio("Chỉ tiêu cơ cấu nguồn vốn_Debt/Equity"),
+            gross_margin=get_ratio("Chỉ tiêu khả năng sinh lợi_Gross Profit Margin (%)"),
+            net_margin=get_ratio("Chỉ tiêu khả năng sinh lợi_Net Profit Margin (%)"),
+            asset_turnover=get_ratio("Chỉ tiêu hiệu quả hoạt động_Asset Turnover"),
+        )
+
+    def _build_asset_composition(
+        self, balance_data: List[Dict], labels: List[str]
+    ) -> ToolkitComposition:
+        """Build asset composition data for stacked bar chart."""
+        # Field mappings for non-bank companies
+        field_map = {
+            "cash_short_invest": [
+                "Tiền và tương đương tiền (đồng)",
+                "Giá trị thuần đầu tư ngắn hạn (đồng)",
+            ],
+            "receivable": ["Các khoản phải thu ngắn hạn (đồng)"],
+            "inventory": ["Hàng tồn kho, ròng (đồng)"],
+            "long_term_invest": ["Đầu tư dài hạn (đồng)"],
+            "total_asset": ["TỔNG CỘNG TÀI SẢN (đồng)"],
+        }
+
+        name_map = {
+            "cash_short_invest": "Tiền & ĐT ngắn hạn",
+            "receivable": "Khoản phải thu",
+            "inventory": "Hàng tồn kho",
+            "long_term_invest": "Đầu tư dài hạn",
+            "other_asset": "Tài sản khác",
+            "total_asset": "Tổng tài sản",
+        }
+
+        # Reverse data for chronological order
+        reversed_data = list(reversed(balance_data))
+
+        # Extract values for each component
+        series_data: Dict[str, List[Optional[float]]] = {
+            key: [] for key in field_map
+        }
+        series_data["other_asset"] = []
+
+        for item in reversed_data:
+            # Sum multiple fields for composite keys
+            for key, fields in field_map.items():
+                total = 0.0
+                has_value = False
+                for field in fields:
+                    val = item.get(field)
+                    if val is not None:
+                        try:
+                            total += float(val)
+                            has_value = True
+                        except (ValueError, TypeError):
+                            pass
+                series_data[key].append(total if has_value else None)
+
+            # Calculate other_asset = total - (known components)
+            total_asset = series_data["total_asset"][-1]
+            if total_asset is not None:
+                known_sum = sum(
+                    v or 0
+                    for k, v in [
+                        ("cash_short_invest", series_data["cash_short_invest"][-1]),
+                        ("receivable", series_data["receivable"][-1]),
+                        ("inventory", series_data["inventory"][-1]),
+                        ("long_term_invest", series_data["long_term_invest"][-1]),
+                    ]
+                )
+                series_data["other_asset"].append(total_asset - known_sum)
+            else:
+                series_data["other_asset"].append(None)
+
+        # Build series
+        series_keys = [
+            "cash_short_invest",
+            "receivable",
+            "inventory",
+            "long_term_invest",
+            "other_asset",
+            "total_asset",
+        ]
+        series = [
+            ToolkitSeriesItem(key=key, name=name_map[key], values=series_data[key])
+            for key in series_keys
+        ]
+
+        # Build percent series (excluding total_asset)
+        percent_keys = [k for k in series_keys if k != "total_asset"]
+        percent_series = []
+        for key in percent_keys:
+            pct_values = []
+            for i, val in enumerate(series_data[key]):
+                total = series_data["total_asset"][i]
+                if val is not None and total and total != 0:
+                    pct_values.append(val / total)
+                else:
+                    pct_values.append(None)
+            percent_series.append(ToolkitPercentSeriesItem(key=key, values=pct_values))
+
+        return ToolkitComposition(
+            labels=labels,
+            series=series,
+            percent_series=percent_series,
+        )
+
+    def _build_revenue_composition(
+        self, income_data: List[Dict], labels: List[str]
+    ) -> ToolkitComposition:
+        """Build revenue composition data for stacked bar chart."""
+        field_map = {
+            "core_revenue": ["Doanh thu thuần"],
+            "financial_income": ["Thu nhập tài chính"],
+            "other_income": ["Thu nhập khác"],
+        }
+
+        name_map = {
+            "core_revenue": "Doanh thu thuần HĐKD",
+            "financial_income": "Doanh thu tài chính",
+            "other_income": "Thu nhập khác",
+        }
+
+        reversed_data = list(reversed(income_data))
+
+        series_data: Dict[str, List[Optional[float]]] = {key: [] for key in field_map}
+
+        for item in reversed_data:
+            for key, fields in field_map.items():
+                total = 0.0
+                has_value = False
+                for field in fields:
+                    val = item.get(field)
+                    if val is not None:
+                        try:
+                            total += float(val)
+                            has_value = True
+                        except (ValueError, TypeError):
+                            pass
+                series_data[key].append(total if has_value else None)
+
+        series_keys = ["core_revenue", "financial_income", "other_income"]
+        series = [
+            ToolkitSeriesItem(key=key, name=name_map[key], values=series_data[key])
+            for key in series_keys
+        ]
+
+        # Calculate total for percent
+        totals = []
+        for i in range(len(labels)):
+            t = sum(
+                series_data[k][i] or 0
+                for k in series_keys
+                if i < len(series_data[k]) and series_data[k][i] is not None
+            )
+            totals.append(t if t > 0 else None)
+
+        percent_series = []
+        for key in series_keys:
+            pct_values = []
+            for i, val in enumerate(series_data[key]):
+                total = totals[i] if i < len(totals) else None
+                if val is not None and total and total != 0:
+                    pct_values.append(val / total)
+                else:
+                    pct_values.append(None)
+            percent_series.append(ToolkitPercentSeriesItem(key=key, values=pct_values))
+
+        return ToolkitComposition(
+            labels=labels,
+            series=series,
+            percent_series=percent_series,
+        )
+
+    def _build_comparison(
+        self,
+        balance_data: List[Dict],
+        income_data: List[Dict],
+        labels: List[str],
+        period: str,
+    ) -> ToolkitComparison:
+        """Build comparison data with YoY/QoQ changes."""
+        reversed_balance = list(reversed(balance_data))
+        reversed_income = list(reversed(income_data))
+
+        def extract_values(data: List[Dict], field: str) -> List[Optional[float]]:
+            values = []
+            for item in data:
+                val = item.get(field)
+                if val is not None:
+                    try:
+                        values.append(float(val))
+                    except (ValueError, TypeError):
+                        values.append(None)
+                else:
+                    values.append(None)
+            return values
+
+        def calc_yoy(values: List[Optional[float]]) -> List[Optional[float]]:
+            """Calculate YoY/QoQ growth rate."""
+            yoy = [None]  # First period has no comparison
+            for i in range(1, len(values)):
+                curr = values[i]
+                prev = values[i - 1]
+                if curr is not None and prev is not None and prev != 0:
+                    yoy.append((curr - prev) / abs(prev))
+                else:
+                    yoy.append(None)
+            return yoy
+
+        # Extract metrics
+        total_asset_vals = extract_values(reversed_balance, "TỔNG CỘNG TÀI SẢN (đồng)")
+        revenue_vals = extract_values(reversed_income, "Doanh thu thuần")
+        net_profit_vals = extract_values(reversed_income, "Lợi nhuận thuần")
+
+        metrics = [
+            ToolkitComparisonMetric(
+                key="total_asset",
+                name="Tổng tài sản",
+                values=total_asset_vals,
+                yoy=calc_yoy(total_asset_vals),
+            ),
+            ToolkitComparisonMetric(
+                key="core_revenue",
+                name="Doanh thu thuần",
+                values=revenue_vals,
+                yoy=calc_yoy(revenue_vals),
+            ),
+            ToolkitComparisonMetric(
+                key="net_profit",
+                name="LN sau thuế",
+                values=net_profit_vals,
+                yoy=calc_yoy(net_profit_vals),
+            ),
+        ]
+
+        return ToolkitComparison(labels=labels, metrics=metrics)
 
 
 class CompanyService:
