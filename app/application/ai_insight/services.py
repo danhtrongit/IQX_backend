@@ -128,9 +128,12 @@ class AIInsightService:
         self,
         proxy_url: str,
         api_key: str,
-        model: str = "gemini-claude-opus-4-5-thinking",
+        model: str = "claude-opus-4-5-thinking",
     ):
-        self.proxy_url = proxy_url
+        self.proxy_url = proxy_url.rstrip("/")
+        if not self.proxy_url.endswith("/chat/completions"):
+            self.proxy_url = f"{self.proxy_url}/chat/completions"
+
         self.api_key = api_key
         self.model = model
         self.pattern_detector = CandlestickPatternDetector()
