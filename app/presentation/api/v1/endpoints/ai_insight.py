@@ -11,6 +11,7 @@ from app.application.ai_insight.dtos import (
 from app.application.ai_insight.services import AIInsightService
 from app.infrastructure.db.session import async_session_factory
 from app.core.cache import get_cache, CacheTTL
+from app.core.config import settings
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -18,9 +19,9 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/ai-insight", tags=["AI Insight"])
 
 # Configuration for Gemini proxy
-GEMINI_PROXY_URL = "http://43.228.214.64:8317/v1/chat/completions"
-GEMINI_API_KEY = "sk-ucc-m1xMHkNs3BRXUo0M3K2CZUaADGBeCIZWBWQsftA7h"
-GEMINI_MODEL = "gemini-claude-opus-4-5-thinking"
+GEMINI_PROXY_URL = settings.AI_PROXY
+GEMINI_API_KEY = settings.AI_API_KEY
+GEMINI_MODEL = settings.AI_MODEL
 
 # Singleton service
 _ai_insight_service = None
