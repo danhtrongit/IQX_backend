@@ -122,7 +122,7 @@ async def get_ratio(
 async def get_toolkit(
     symbol: str,
     period: str = Query("year", description="Period: quarter or year"),
-    limit: int = Query(8, ge=1, le=20, description="Number of periods"),
+    limit: int = Query(3, ge=1, le=20, description="Number of periods (default 3 years)"),
     lang: str = Query("vi", description="Language: vi or en"),
 ) -> ToolkitResponse:
     """Get toolkit data with aggregated financial metrics for analysis."""

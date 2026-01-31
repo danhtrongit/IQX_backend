@@ -190,24 +190,32 @@ class AnalysisReportResponse(BaseModel):
 
 
 # === Toolkit DTOs ===
+# Toolkit spec from toolkit.pdf - 8 charts:
+# 1. Cơ cấu tài sản (stacked columns)
+# 2. Cơ cấu vốn chủ & nợ phải trả (stacked columns)
+# 3. Cơ cấu doanh thu (stacked columns)
+# 4. Cơ cấu chi phí (stacked columns)
+# 5. HĐKD bridge (CFO waterfall)
+# 6. HĐĐT bridge (CFI waterfall)
+# 7. HĐTC bridge (CFF waterfall)
+# 8. Lưu chuyển tiền tệ thuần (net cash flow)
 
 class ToolkitRequest(BaseModel):
     """Toolkit request."""
 
     period: str = Field("year", description="Period: quarter or year")
-    limit: int = Field(8, ge=1, le=20, description="Number of periods")
+    limit: int = Field(3, ge=1, le=20, description="Number of periods (default 3 years)")
     lang: str = Field("vi", description="Language: vi or en")
 
 
 class ToolkitSummary(BaseModel):
-    """Summary metrics for toolkit."""
+    """Summary metrics for toolkit - 5 cards as per spec."""
 
     roe: Optional[float] = None
     roa: Optional[float] = None
     debt_equity: Optional[float] = None
     gross_margin: Optional[float] = None
     net_margin: Optional[float] = None
-    asset_turnover: Optional[float] = None
 
 
 class ToolkitSeriesItem(BaseModel):
@@ -233,30 +241,82 @@ class ToolkitComposition(BaseModel):
     percent_series: List[ToolkitPercentSeriesItem]
 
 
-class ToolkitComparisonMetric(BaseModel):
-    """Comparison metric with YoY/QoQ changes."""
+class ToolkitBridgeItem(BaseModel):
+    """Single item in a bridge/waterfall chart."""
 
     key: str
     name: str
     values: List[Optional[float]]
-    yoy: List[Optional[float]]
+    bridge_type: str = "flow"  # "start", "flow", "end"
 
 
-class ToolkitComparison(BaseModel):
-    """Comparison data for YoY/QoQ charts."""
+class ToolkitBridgeChart(BaseModel):
+    """Bridge/waterfall chart data for cash flow analysis."""
 
     labels: List[str]
-    metrics: List[ToolkitComparisonMetric]
+    items: List[ToolkitBridgeItem]
+
+
+class ToolkitNetCashFlow(BaseModel):
+    """Net cash flow (delta_cash = cfo + cfi + cff)."""
+
+    labels: List[str]
+    cfo: List[Optional[float]]
+    cfi: List[Optional[float]]
+    cff: List[Optional[float]]
+    delta_cash: List[Optional[float]]
+
+
+class ToolkitCompareItem(BaseModel):
+    """Single item for single-period comparison view."""
+
+    key: str
+    name: str
+    value: Optional[float] = None
+    percent_of_total: Optional[float] = None
+
+
+class ToolkitSinglePeriodCompare(BaseModel):
+    """Comparison bars for a single period (latest in requested range)."""
+
+    period_label: str
+    total_key: str
+    total_name: str
+    total_value: Optional[float] = None
+    items: List[ToolkitCompareItem]
 
 
 class ToolkitResponse(BaseModel):
-    """Toolkit response with aggregated financial data."""
+    """Toolkit response with aggregated financial data - 8 charts as per toolkit.pdf."""
 
     symbol: str
     type: str  # "bank" or "non-bank"
     period: str
     limit: int
     summary: ToolkitSummary
+    # Chart 1: Cơ cấu tài sản (Bank vs Non-Bank variants)
     asset_composition: ToolkitComposition
+    # Chart 2: Cơ cấu vốn chủ & nợ phải trả
+    liability_equity: ToolkitComposition
+    # Chart 3: Cơ cấu doanh thu (gross_profit, financial_income, other_income)
     revenue_composition: ToolkitComposition
-    comparison: ToolkitComparison
+    # Chart 4: Cơ cấu chi phí (cogs, selling, admin, interest)
+    expense_composition: ToolkitComposition
+    # Chart 5: HĐKD bridge (CFO waterfall)
+    cfo_bridge: ToolkitBridgeChart
+    # Chart 6: HĐĐT bridge (CFI waterfall)
+    cfi_bridge: ToolkitBridgeChart
+    # Chart 7: HĐTC bridge (CFF waterfall)
+    cff_bridge: ToolkitBridgeChart
+    # Chart 8: Lưu chuyển tiền tệ thuần
+    net_cash_flow: ToolkitNetCashFlow
+
+    # Optional: Single-period comparison (when limit=1)
+    asset_compare: Optional[ToolkitSinglePeriodCompare] = None
+    liability_compare: Optional[ToolkitSinglePeriodCompare] = None
+    revenue_compare: Optional[ToolkitSinglePeriodCompare] = None
+    expense_compare: Optional[ToolkitSinglePeriodCompare] = None
+    cfo_compare: Optional[ToolkitSinglePeriodCompare] = None
+    cfi_compare: Optional[ToolkitSinglePeriodCompare] = None
+    cff_compare: Optional[ToolkitSinglePeriodCompare] = None
+    net_cash_compare: Optional[ToolkitSinglePeriodCompare] = None

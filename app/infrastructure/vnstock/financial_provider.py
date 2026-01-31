@@ -41,7 +41,7 @@ class VnstockFinancialProvider:
         """Get balance sheet data."""
         try:
             finance = _get_vnstock_finance(symbol, period)
-            df = finance.balance_sheet(lang=lang, dropna=True, to_df=True)
+            df = finance.balance_sheet(lang=lang, dropna=False, to_df=True)
 
             if df is None or df.empty:
                 return []
@@ -60,7 +60,7 @@ class VnstockFinancialProvider:
         """Get income statement data."""
         try:
             finance = _get_vnstock_finance(symbol, period)
-            df = finance.income_statement(lang=lang, dropna=True, to_df=True)
+            df = finance.income_statement(lang=lang, dropna=False, to_df=True)
 
             if df is None or df.empty:
                 return []
@@ -79,7 +79,7 @@ class VnstockFinancialProvider:
         """Get cash flow statement data."""
         try:
             finance = _get_vnstock_finance(symbol, period)
-            df = finance.cash_flow(lang=lang, dropna=True, to_df=True)
+            df = finance.cash_flow(lang=lang, dropna=False, to_df=True)
 
             if df is None or df.empty:
                 return []
